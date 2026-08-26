@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+{% block title %}Checklist – DATAPREV 2026{% endblock %}
+
+{% block content %}
+  <!-- COUNTDOWN -->
+  <div class="card card-accent cd-center" style="margin-bottom:1.2rem">
+    <p>Tempo até a prova</p>
+    <div class="cd-row">
+      <div class="cd-box"><div class="n" id="d">--</div><div class="l">dias</div></div>
+      <div class="cd-box"><div class="n" id="h">--</div><div class="l">horas</div></div>
+      <div class="cd-box"><div class="n" id="m">--</div><div class="l">min</div></div>
+      <div class="cd-box"><div class="n" id="s">--</div><div class="l">seg</div></div>
+    </div>
+    <div class="cd-sub"><strong>11/10/2026 · 13h</strong> · Portões fecham 12h30 · Florianópolis/SC</div>
+  </div>
+
+  <div id="marcos-banner"></div>
+
+  <div class="today-card" id="tc"></div>
+  <div class="prog"><div class="track"><div class="fill" id="fill" style="width:0%"></div></div><div class="prog-lbl" id="plbl">0/0 dias</div></div>
+  <div class="offline-warn" id="warn">
+    <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/></svg>
+    Servidor offline – dados salvos temporariamente no navegador.
+  </div>
+
+  <div class="wk-nav" id="wn"></div>
+  <div id="dc"></div>
+
+  <details class="skip-details">
+    <summary>
+      <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+      Único tópico do edital fora do plano
+    </summary>
+    <table class="skip-table">
+      <thead><tr><th>Tópico (edital)</th><th>Situação</th></tr></thead>
+      <tbody>
+        <tr><td>Mobile (Android, iOS)</td><td>Ausente do plano. FGV raramente cobra detalhes de mobile em perfis de desenvolvimento back/full-stack. Como alternativa, os conceitos de PWA do dia 09/08 cobrem parte desse tema. <span class="why">Único tópico sacrificado — todos os outros foram alocados no cronograma.</span></td></tr>
+      </tbody>
+    </table>
+  </details>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const BASE = '';
+let doneSet = new Set(), notesData = {}, expanded = new Set(), offline = false, activeWk = null;
+let saveTimer = null;
+let minutesData = {}, timerState = {date:null,startedAt:null,elapsed:0,interval:null};
+
+async function apiFetch(method, path, body) {
+  try {
+    const r = await fetch(BASE+path, {method, headers:{'Content-Type':'application/json'}, body: body ? JSON.stringify(body) : undefined});
+    return await r.json();
+  } catch { return null; }
+}
+
+function lsKey(k){return 'dp26_'+k;}
+function lsGet(k,def){try{return JSON.parse(localStorage.getItem(lsKey(k))||'null')??def;}catch{return def;}}
+function lsSet(k,v){localStorage.setItem(lsKey(k),JSON.stringify(v));}
+
+async function loadState() {
+  const data = await apiFetch('GET', '/api/checklist');
+  if (data) {
+    doneSet = new Set(data.filter(r=>r.done).map(r=>r.date));
+    notesData = Object.fromEntries(data.map(r=>[r.date,r.notes]));
+    minutesData = Object.fromEntries(data.filter(r=>r.minutes>0).map(r=>[r.date,r.minutes]));
+    offline = false;
+  } else {
+    offline = true;
+    doneSet = new Set(lsGet('done',[]));
+    notesData = lsGet('notes',{});
+    minutesData = lsGet('minutes',{});
+  }
+  render();
+  restoreTimerSession();
+}
+
+async function toggleDone(date) {
+  const now = !doneSet.has(date);
+  if (now) doneSet.add(date); else doneSet.delete(date);
+  lsSet('done',[...doneSet]);
+  if (!offline) { apiFetch('POST','/api/checklist/toggle',{date}); }
+  render();
+}
+
+function toggleNotes(date, e) {
+  if(e) e.stopPropagation();
+  const el = document.getElementById('na-'+date);
+  if (!el) return;
+  if (expanded.has(date)) { expanded.delete(date); el.style.display='none'; }
+  else { expanded.add(date); el.style.display='block'; el.querySelector('textarea').focus(); }
+}
+
+function onNotesInput(el, date) {
+  notesData[date] = el.value;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    if (!offline) apiFetch('POST','/api/checklist/notes',{date,notes:el.value});
+    else { lsSet('notes',notesData); }
+  }, 800);
+}
+
+// ---- Timer ----
+function fmtLiveTime(ms){const t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;return h>0?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function fmtMinutes(mins){if(!mins)return '';const h=Math.floor(mins/60),m=mins%60;return h>0?(m>0?`${h}h${String(m).padStart(2,'0')}m`:`${h}h`):`${m}m`;}
+
+function _saveSession(){
+  if(timerState.date) lsSet('tmr',{date:timerState.date,startedAt:timerState.startedAt,baseMs:timerState.elapsed});
+  else localStorage.removeItem(lsKey('tmr'));
+}
+
+function restoreTimerSession(){
+  const s=lsGet('tmr',null);
+  if(!s?.date)return;
+  const elapsed=(s.baseMs||0)+(Date.now()-s.startedAt);
+  timerState.date=s.date;
+  timerState.startedAt=Date.now();
+  timerState.elapsed=elapsed;
+  timerState.interval=setInterval(tickTimer,500);
+  minutesData[s.date]=Math.floor(elapsed/60000);
+  render();
+}
+
+function startTimer(date,e){
+  e.stopPropagation();
+  if(timerState.date===date){pauseTimer();return;}
+  if(timerState.date){
+    clearInterval(timerState.interval);
+    const tot=timerState.elapsed+(Date.now()-timerState.startedAt);
+    minutesData[timerState.date]=Math.floor(tot/60000);
+    lsSet('el_'+timerState.date, tot);
+    if(!offline)apiFetch('POST','/api/checklist/time',{date:timerState.date,minutes:minutesData[timerState.date]});
+    timerState={date:null,startedAt:null,elapsed:0,interval:null};
+  }
+  const baseMs=lsGet('el_'+date, (minutesData[date]||0)*60000);
+  timerState={date,startedAt:Date.now(),elapsed:baseMs,interval:setInterval(tickTimer,500)};
+  _saveSession();
+  render();
+}
+
+function pauseTimer(){
+  if(!timerState.date)return;
+  clearInterval(timerState.interval);
+  const totalMs=timerState.elapsed+(Date.now()-timerState.startedAt);
+  const mins=Math.floor(totalMs/60000);
+  minutesData[timerState.date]=mins;
+  lsSet('el_'+timerState.date, totalMs);
+  if(!offline)apiFetch('POST','/api/checklist/time',{date:timerState.date,minutes:mins});
+  else lsSet('minutes',minutesData);
+  localStorage.removeItem(lsKey('tmr'));
+  timerState={date:null,startedAt:null,elapsed:0,interval:null};
+  render();
+}
+
+function tickTimer(){
+  if(!timerState.date)return;
+  const totalMs=timerState.elapsed+(Date.now()-timerState.startedAt);
+  const el=document.getElementById('timer-badge-'+timerState.date);
+  if(el)el.textContent=fmtLiveTime(totalMs);
+  const newMins=Math.floor(totalMs/60000);
+  if(newMins>(minutesData[timerState.date]||0)){
+    minutesData[timerState.date]=newMins;
+    if(!offline)apiFetch('POST','/api/checklist/time',{date:timerState.date,minutes:newMins});
+  }
+  lsSet('el_'+timerState.date, totalMs);
+  _saveSession();
+}
+
+function render() {
+  const today = todayStr();
+  document.getElementById('warn').style.display = offline ? 'block' : 'none';
+
+  const e = PLAN.find(p=>p.d===today) || PLAN.find(p=>p.d>today) || PLAN[PLAN.length-1];
+  document.getElementById('tc').innerHTML = `
+    <div class="today-lbl">${e.d===today?`${ic('calendar-days')} Hoje`:`${ic('calendar-days')} Próximo dia`}</div>
+    <div class="today-date">${fmtDate(e.d)}</div>
+    <div class="today-topic">${e.exam?ic('target')+' ':''}${esc(e.t)}</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.3rem">
+      ${e.time!=='—'?`<span class="badge badge-time">${ic('clock')} ${e.time}</span>`:''}
+      ${e.q!=='—'?`<span class="badge badge-q">${ic('pencil')} ${e.q}</span>`:''}
+      <span class="badge badge-phase">${PHASE_LABELS[e.ph]}</span>
+      ${e.alert?`<span class="badge badge-alert">${alertHtml(e.alert)}</span>`:''}
+    </div>`;
+
+  const past = PLAN.filter(p=>p.d<=today);
+  const dc = [...doneSet].filter(d=>d<=today).length;
+  const pct = past.length ? Math.round(dc/past.length*100) : 0;
+  document.getElementById('fill').style.width = pct+'%';
+  document.getElementById('plbl').innerHTML = `<strong>${dc}/${past.length}</strong> dias concluídos`;
+
+  const nw = Math.ceil(PLAN.length/7);
+  if (activeWk===null) { const i=PLAN.findIndex(p=>p.d>=today); activeWk = i>=0?Math.floor(i/7)+1:nw; }
+  document.getElementById('wn').innerHTML = Array.from({length:nw},(_,i)=>`<button class="wk-btn${i+1===activeWk?' on':''}" onclick="setWk(${i+1})">S${i+1}</button>`).join('');
+
+  const si=(activeWk-1)*7, wp=PLAN.slice(si,si+7);
+  document.getElementById('dc').innerHTML = `<div class="wk-title">${PHASE_LABELS[wp[0].ph]} · ${fmtDate(wp[0].d)} → ${fmtDate(wp[wp.length-1].d)}</div>` +
+    wp.map(p=>{
+      const isDone=doneSet.has(p.d), isTd=p.d===today, hasNote=!!(notesData[p.d]&&notesData[p.d].trim());
+      const isTimingThisDay=timerState.date===p.d, savedMins=minutesData[p.d]||0;
+      return `<div class="day${isDone?' done':''}${isTd?' istoday':''}${p.alert&&!p.exam?' isalert':''}${p.exam?' isexam':''}">
+        <div class="day-row" onclick="location.href='/estudar/${p.d}'">
+          <div class="chk" onclick="event.stopPropagation();toggleDone('${p.d}')" title="${isDone?'Desmarcar':'Marcar como feito'}">${isDone?ic('check',11):''}</div>
+          <div class="dc">
+            <div class="dh">
+              <div><span class="ddl">${fmtDate(p.d)}</span> <span class="dtopic">${p.exam?ic('target')+' ':''}${esc(p.t)}</span>${hasNote?'<span class="note-dot"></span>':''}</div>
+              <div class="day-btns"></div>
+            </div>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.25rem">
+              ${p.time!=='—'?`<span class="badge badge-time">${ic('clock')} ${p.time}</span>`:''}
+              ${p.q!=='—'?`<span class="badge badge-q">${ic('pencil')} ${p.q}</span>`:''}
+              ${(savedMins>0||isTimingThisDay)?`<span class="badge time-badge${isTimingThisDay?' active':''}" id="timer-badge-${p.d}">${isTimingThisDay?fmtLiveTime(timerState.elapsed):fmtMinutes(savedMins)}</span>`:''}
+            </div>
+            ${p.alert?`<div class="alert-txt">${alertHtml(p.alert)}</div>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function setWk(n){activeWk=n;render();}
+
+// Countdown
+const exam=new Date('2026-10-11T13:00:00');
+function tick(){const df=exam-new Date();if(df<=0)return;const d=Math.floor(df/86400000),hh=Math.floor(df%86400000/3600000),mm=Math.floor(df%3600000/60000),ss=Math.floor(df%60000/1000);['d','h','m','s'].forEach((id,i)=>document.getElementById(id).textContent=String([d,hh,mm,ss][i]).padStart(2,'0'));}
+
+// RESOURCES definido em plan-data.js (compartilhado)
+const _RESOURCES_IN_PLAN_DATA = true;
+if (false) { const RESOURCES = {
+  '2026-07-18': {
+    videos: [
+      ['Michelli Brito – Java Streams & Lambda (PT-BR)', 'https://www.youtube.com/results?search_query=michelli+brito+java+streams+lambda', '~30min, PT-BR'],
+      ['Loiane Groner – Curso Java gratuito', 'https://loiane.training/curso/java-basico', 'loiane.training, PT-BR'],
+      ['Java Brains – Lambda & Streams (EN)', 'https://www.youtube.com/results?search_query=java+brains+lambda+streams+java+8', '~40min, EN'],
+    ],
+    reading: [
+      ['Baeldung – Java 8 Streams API Tutorial', 'https://www.baeldung.com/java-8-streams', 'Tutorial completo'],
+      ['Baeldung – Java Generics', 'https://www.baeldung.com/java-generics', 'Wildcards e bounds'],
+      ['Oracle – Stream API JavaDoc', 'https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html', 'Referência oficial'],
+    ],
+    questions: [
+      ['QConcursos – FGV · Java / OO', 'https://www.qconcursos.com/questoes-de-concursos/questoes', 'Filtrar: Banca=FGV · buscar \'Java orientação objetos\''],
+      ['PCI Concursos – alternativa gratuita', 'https://www.pciconcursos.com.br/questoes/', 'Buscar \'Java OO\''],
+    ],
+    tips: [
+      '<strong>Streams são lazy:</strong> operações intermediárias (filter, map) só executam ao chamar uma operação terminal (collect, forEach, count).',
+      '<strong>Lambda</strong> implementa exatamente um @FunctionalInterface: Predicate, Function, Consumer, Supplier, Comparator, Runnable.',
+      '<strong>Generics:</strong> <code>? extends T</code> = leitura/covariant; <code>? super T</code> = escrita/contravariant.',
+      'Métodos mais cobrados FGV: <strong>filter, map, flatMap, reduce, collect, sorted, distinct, limit, count, anyMatch, allMatch</strong>.',
+      'Stream pode ser <strong>sequential</strong> (padrão) ou <strong>parallel</strong> via <code>parallelStream()</code>.',
+    ]
+  },
+  '2026-07-19': {
+    videos: [
+      ['Michelli Brito – Spring Boot 3 playlist (PT-BR)', 'https://www.youtube.com/results?search_query=michelli+brito+spring+boot+3+crud', 'Playlist, PT-BR'],
+      ['Fernanda Kipper – Spring Boot API REST (PT-BR)', 'https://www.youtube.com/results?search_query=fernanda+kipper+spring+boot+api+rest', '~1h, PT-BR'],
+      ['Amigoscode – Spring Boot Full Tutorial (EN)', 'https://www.youtube.com/results?search_query=amigoscode+spring+boot+full+tutorial', '~3h, EN'],
+    ],
+    reading: [
+      ['Baeldung – IoC e DI no Spring', 'https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring', 'Conceito fundamental'],
+      ['Baeldung – Spring Dependency Injection', 'https://www.baeldung.com/spring-dependency-injection', 'Constructor, Setter, Field'],
+      ['Spring Docs – Core Container (oficial)', 'https://docs.spring.io/spring-framework/docs/current/reference/html/core.html', 'Referência oficial'],
+    ],
+    questions: [
+      ['QConcursos – FGV · Spring Framework', 'https://www.qconcursos.com/questoes-de-concursos/questoes', 'Filtrar: FGV · buscar \'Spring IoC injeção dependência\''],
+      ['PCI Concursos', 'https://www.pciconcursos.com.br/questoes/', 'Buscar \'Spring Boot\''],
+    ],
+    tips: [
+      '<strong>IoC ≠ DI:</strong> IoC é o princípio (o framework controla o fluxo); DI é o mecanismo (objetos recebem dependências prontas).',
+      'Injeção por <strong>construtor</strong> é a preferida (imutabilidade, testabilidade). <code>@Autowired</code> no campo é desaconselhada.',
+      '<strong>@SpringBootApplication</strong> = @Configuration + @EnableAutoConfiguration + @ComponentScan.',
+      'Estereótipos: <strong>@Component</strong> (genérico), <strong>@Service</strong> (negócio), <strong>@Repository</strong> (dados), <strong>@RestController</strong> (web).',
+      'Escopo padrão = <strong>Singleton</strong>. <code>@Scope("prototype")</code> cria nova instância a cada injeção.',
+    ]
+  },
+  '2026-07-20': {
+    videos: [
+      ['Rodrigo Branas – REST e HTTP detalhado (PT-BR)', 'https://www.youtube.com/results?search_query=rodrigo+branas+rest+http+api', '~1h, PT-BR'],
+      ['Rocketseat – REST API conceitos fundamentais (PT-BR)', 'https://www.youtube.com/results?search_query=rocketseat+rest+api+conceitos+fundamentais', '~30min'],
+      ['Richardson Maturity Model explicado (PT-BR)', 'https://www.youtube.com/results?search_query=richardson+maturity+model+rest+portugues', '~15min'],
+    ],
+    reading: [
+      ['restfulapi.net – Guia REST completo', 'https://restfulapi.net/', 'Referência objetiva, EN'],
+      ['Baeldung – REST API Best Practices', 'https://www.baeldung.com/rest-api-best-practices', 'EN'],
+      ['Roy Fielding – Capítulo 5 da dissertação REST', 'https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm', 'Fonte primária'],
+    ],
+    questions: [
+      ['QConcursos – FGV · REST / HTTP', 'https://www.qconcursos.com/questoes-de-concursos/questoes', 'Filtrar: FGV · buscar \'REST API HTTP status code\''],
+      ['PCI Concursos', 'https://www.pciconcursos.com.br/questoes/', 'Buscar \'REST idempotente\''],
+    ],
+    tips: [
+      '<strong>Richardson Maturity Model</strong> (muito cobrado pela FGV): Level 0 = HTTP túnel; Level 1 = Recursos (/users/1); Level 2 = Verbos HTTP corretos; Level 3 = HATEOAS.',
+      '<strong>Idempotência:</strong> GET, PUT, DELETE são idempotentes. POST <em>não é</em> idempotente.',
+      '<strong>Status codes essenciais:</strong> 200 OK · 201 Created · 204 No Content · 400 Bad Request · 401 Unauthorized · 403 Forbidden · 404 Not Found · 409 Conflict · 422 Unprocessable · 500 Internal Error.',
+      '<strong>REST constraints:</strong> Stateless, Client-Server, Cacheable, Uniform Interface, Layered System, Code-on-Demand (opcional).',
+      '<strong>HATEOAS</strong> = respostas incluem links para ações disponíveis (Level 3 do Richardson). Ex: { "links": [{"rel":"self","href":"/users/1"}] }.',
+    ]
+  },
+  '2026-07-21': {
+    videos: [
+      ['SOA – Arquitetura orientada a serviços (PT-BR)', 'https://www.youtube.com/results?search_query=soa+arquitetura+orientada+servicos+conceitos+portugues', '~20min'],
+      ['SOAP vs REST – diferenças (PT-BR)', 'https://www.youtube.com/results?search_query=soap+vs+rest+diferença+web+service+tutorial+br', '~15min'],
+      ['Swagger/OpenAPI com Spring Boot (PT-BR)', 'https://www.youtube.com/results?search_query=swagger+openapi+spring+boot+tutorial+portugues', '~25min'],
+    ],
+    reading: [
+      ['Baeldung – SOAP Web Service com Spring Boot', 'https://www.baeldung.com/spring-boot-soap-web-service', 'Hands-on'],
+      ['Swagger – OpenAPI Specification (oficial)', 'https://swagger.io/docs/specification/about/', 'Documentação oficial'],
+      ['IBM – O que é SOA? (PT-BR)', 'https://www.ibm.com/br-pt/topics/soa', 'Explicação clara'],
+    ],
+    questions: [
+      ['QConcursos – FGV · SOAP / WSDL / Web Services', 'https://www.qconcursos.com/questoes-de-concursos/questoes', 'Filtrar: FGV · buscar \'WSDL SOAP web service\''],
+      ['PCI Concursos', 'https://www.pciconcursos.com.br/questoes/', 'Buscar \'web service WSDL\''],
+    ],
+    tips: [
+      '<strong>WSDL</strong>: descreve o contrato do serviço – operações, tipos de dados, mensagens e endpoint. O cliente usa o WSDL para gerar o stub automaticamente.',
+      '<strong>UDDI</strong>: diretório/catálogo de web services. White Pages (quem é), Yellow Pages (categoria), Green Pages (como usar/binding).',
+      '<strong>SOAP envelope:</strong> Envelope > Header (opcional: WS-Security) + Body (obrigatório: dados) + Fault (erros).',
+      '<strong>SOA princípios-chave:</strong> acoplamento fraco, contrato padronizado, abstração, reusabilidade, autonomia, sem estado, visibilidade, composição.',
+      'Swagger = <strong>OpenAPI Specification</strong>. Swagger 2.0 → OpenAPI 3.x. Spring: biblioteca <code>springdoc-openapi</code> gera docs automaticamente.',
+    ]
+  },
+  '2026-07-22': {
+    videos: [
+      ['Michelli Brito – JPA e Hibernate com Spring Boot (PT-BR)', 'https://www.youtube.com/results?search_query=michelli+brito+jpa+hibernate+spring+boot', 'Playlist, PT-BR'],
+      ['Loiane Groner – JPA/Hibernate (PT-BR)', 'https://www.youtube.com/results?search_query=loiane+jpa+hibernate+tutorial+portugues', '~1h'],
+      ['Amigoscode – Spring Data JPA (EN)', 'https://www.youtube.com/results?search_query=amigoscode+jpa+hibernate+spring+data', '~1h, EN'],
+    ],
+    reading: [
+      ['Baeldung – Guia completo JPA/Hibernate', 'https://www.baeldung.com/learn-jpa-hibernate', 'Série completa'],
+      ['Baeldung – Lazy vs Eager Loading', 'https://www.baeldung.com/hibernate-lazy-eager-loading', 'Ponto crítico para FGV'],
+      ['Vlad Mihalcea – Hibernate Performance (EN)', 'https://vladmihalcea.com/tutorials/hibernate/', 'Expert no assunto'],
+    ],
+    questions: [
+      ['QConcursos – FGV · JPA / ORM / Hibernate', 'https://www.qconcursos.com/questoes-de-concursos/questoes', 'Filtrar: FGV · buscar \'JPA Hibernate ORM mapeamento\''],
+      ['PCI Concursos', 'https://www.pciconcursos.com.br/questoes/', 'Buscar \'JPA Hibernate\''],
+    ],
+    tips: [
+      '<strong>Estados de uma entidade JPA:</strong> Transient (sem ID) → Persistent (gerenciado pelo EntityManager) → Detached (sessão fechada) → Removed (marcado para deleção).',
+      '<strong>FetchType padrão:</strong> @OneToMany/@ManyToMany = <code>LAZY</code>; @ManyToOne/@OneToOne = <code>EAGER</code>. FGV cobra exatamente isso.',
+      '<strong>Problema N+1:</strong> lista de pais sem JOIN FETCH → 1 query pai + N queries filho. Solução: <code>JOIN FETCH</code> no JPQL ou <code>@EntityGraph</code>.',
+      '<strong>JPQL vs SQL:</strong> JPQL usa nomes de <em>classes Java</em> e <em>atributos</em> (case-sensitive); SQL usa nomes de tabelas e colunas.',
+      '<strong>Cascade:</strong> CascadeType.ALL = PERSIST + MERGE + REMOVE + REFRESH + DETACH. Cuidado com REMOVE em relacionamentos com muitos filhos.',
+    ]
+  }
+}; } // RESOURCES definido em plan-data.js — bloco acima ignorado em runtime
+
+function openResModal(date, e) {
+  if(e) e.stopPropagation();
+  const p = PLAN.find(x=>x.d===date);
+  const r = RESOURCES[date];
+  document.getElementById('m-date').textContent = p ? fmtDate(p.d) : date;
+  document.getElementById('m-topic').textContent = p ? p.t : '';
+  const body = document.getElementById('m-body');
+  if (!r) {
+    body.innerHTML = `<div class="tbd">${ic('clipboard-list',18)} Recursos para este dia ainda não foram adicionados.<br><small>To Be Done</small></div>`;
+  } else {
+    const rows = items => items.map(([lbl,url,tag])=>`<div class="res-item"><a href="${url}" target="_blank" rel="noopener noreferrer">${lbl}</a><span class="res-tag">${tag}</span></div>`).join('');
+    const sec = (head,items,isTips) => `<div class="res-sec"><div class="res-sec-head">${head}</div><div class="res-list">${isTips?`<ul class="tip-list">${items.map(t=>`<li>${t}</li>`).join('')}</ul>`:rows(items)}</div></div>`;
+    body.innerHTML =
+      sec(`${ic('video')} Vídeos recomendados`, r.videos) +
+      sec(`${ic('book')} Leitura`, r.reading) +
+      sec(`${ic('pencil')} Questões FGV`, r.questions) +
+      sec(`${ic('lightbulb')} Foco FGV – o que cai na prova`, r.tips, true);
+  }
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+tick();setInterval(tick,1000);
+loadState();
+renderMarcosBanner();
+
+function renderMarcosBanner(){
+  const el=document.getElementById('marcos-banner');
+  if(!el)return;
+  let st;try{st=JSON.parse(localStorage.getItem(MARCOS_KEY)||'{}');}catch{st={};}
+  const today=todayStr();
+  const items=MARCOS.filter(m=>!m.exam&&m.date).map(m=>{
+    const d=Math.ceil((new Date(m.date+'T23:59:59')-new Date())/86400000);
+    return{...m,d,done:!!st[m.id]};
+  }).filter(m=>m.d>-8);
+  const nodates=MARCOS.filter(m=>!m.date&&!m.exam&&!st[m.id]);
+  if(!items.length&&!nodates.length){el.innerHTML='';return;}
+  const rows=items.map(m=>{
+    const cls=m.done?'past':m.d<0?'past':m.d<=7?'urgent':m.d<=30?'near':'ok';
+    const dStr=m.done?'✓':m.d<0?`${-m.d}d atrás`:m.d===0?'HOJE':`${m.d}d`;
+    const timeHint=m.time?` <small style="color:var(--mu);font-size:.68rem">${m.time}</small>`:'';
+    return `<div class="mb-item${m.done?' done-item':''}" onclick="toggleMarcoBanner('${m.id}')">
+      <div class="mb-chk">${m.done?'✓':''}</div>
+      <span class="mb-txt">${esc(m.label)}${timeHint}</span>
+      <span class="mb-days ${cls}">${dStr}</span>
+    </div>`;
+  }).join('');
+  const noDateNote=nodates.length?`<div style="font-size:.7rem;color:var(--mu);padding:.4rem 1rem">${nodates.length} tarefa(s) sem data — aguardando publicação FGV</div>`:'';
+  el.innerHTML=`<div class="card marcos-banner">
+    <div class="mb-head"><span class="mb-title">&#x1F4CB; Checklist do concurso</span><a href="/dashboard" class="mb-link">ver tudo →</a></div>
+    ${rows}${noDateNote}
+  </div>`;
+}
+function toggleMarcoBanner(id){
+  let st;try{st=JSON.parse(localStorage.getItem(MARCOS_KEY)||'{}');}catch{st={};}
+  if(MARCOS.find(m=>m.id===id)?.exam)return;
+  st[id]=!st[id];localStorage.setItem(MARCOS_KEY,JSON.stringify(st));
+  renderMarcosBanner();
+}
+</script>
+
+<!-- Modal de recursos -->
+<div class="modal-overlay" id="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-info">
+        <div class="modal-date-lbl" id="m-date"></div>
+        <div class="modal-topic-lbl" id="m-topic"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+{% endblock %}

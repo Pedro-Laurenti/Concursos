@@ -1,0 +1,579 @@
+{% extends "base.html" %}
+{% block title %}Estudar — {{ entry.titulo if entry else date }} – DATAPREV 2026{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="study-progress" id="study-prog"></div>
+
+<div class="study-wrap">
+
+  <header class="study-hd">
+    <div class="study-breadcrumb" id="s-breadcrumb"></div>
+    <h1 class="study-title">{{ entry.titulo if entry else "Conteúdo em construção" }}</h1>
+    <div class="study-meta-row" id="s-meta"></div>
+  </header>
+
+  {% if entry %}
+  <article class="estudar-article">{{ entry.html | safe }}</article>
+  {% else %}
+  <div class="study-empty">
+    <p>Conteúdo ainda não disponível para este dia.</p>
+    <p>Será adicionado em breve.</p>
+  </div>
+  {% endif %}
+
+  <section class="study-q-section" id="study-q-section" style="display:none">
+    <div class="study-q-header">
+      <span class="study-q-title">Questões FGV</span>
+      <span class="study-q-score" id="q-score"></span>
+    </div>
+    <div id="q-nav-dots" class="q-nav-dots"></div>
+    <div id="q-card-area"></div>
+    <div class="q-controls" id="q-controls"></div>
+  </section>
+
+  <nav class="study-nav">
+    <button class="btn-ghost" id="btn-prev" onclick="navStudar(-1)">&#8592; Anterior</button>
+    <span class="study-pos" id="e-pos"></span>
+    <button class="btn-ghost" id="btn-next" onclick="navStudar(1)">Pr&#243;ximo &#8594;</button>
+  </nav>
+
+</div>
+
+<!-- Pílula do Pomodoro -->
+<div class="pomo-pill" id="pomo-pill" style="display:none">
+  <span class="pomo-pill-time" id="pomo-pill-time">25:00</span>
+  <button class="pomo-pill-btn" onclick="pomoToggle()" id="pomo-pill-btn">Pausar</button>
+</div>
+
+<!-- Speed Dial -->
+<div class="sd-wrap" id="sd-wrap">
+  <div class="sd-items" id="sd-items">
+    <div class="sd-item">
+      <span class="sd-label">Modo leitura</span>
+      <button class="sd-btn" onclick="toggleZen();toggleSD()" title="Modo leitura">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="sd-item">
+      <span class="sd-label">Tela cheia</span>
+      <button class="sd-btn" onclick="toggleFullscreen();toggleSD()" title="Tela cheia">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+    <div class="sd-item">
+      <span class="sd-label">Recursos</span>
+      <button class="sd-btn" onclick="openRecursos();toggleSD()" title="Recursos de estudo">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </button>
+    </div>
+    <div class="sd-item">
+      <span class="sd-label">Ferramentas</span>
+      <button class="sd-btn" onclick="toggleDrawer('tools');toggleSD()" title="Cronômetro e anotações">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </button>
+    </div>
+  </div>
+  <button class="sd-main" id="sd-main" onclick="toggleSD()" title="Abrir menu">
+    <svg class="lci" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+</div>
+
+<!-- Drawer lateral -->
+<div class="study-drawer" id="study-drawer">
+  <div class="drawer-header">
+    <div class="drawer-tabs">
+      <button class="drawer-tab active" id="tab-btn-tools" onclick="switchTab('tools')">
+        <svg class="lci" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Ferramentas
+      </button>
+      <button class="drawer-tab" id="tab-btn-resources" onclick="switchTab('resources')">
+        <svg class="lci" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Recursos
+      </button>
+    </div>
+    <button class="drawer-close" onclick="toggleDrawer()" title="Fechar">
+      <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="tab-tools">
+    <div class="drawer-section">
+      <div class="drawer-section-label">Cronômetro</div>
+      <div class="pomo-display" id="pomo-display">25:00</div>
+      <div class="pomo-controls">
+        <button class="btn btn-primary btn-sm" id="pomo-btn" onclick="pomoToggle()">Iniciar</button>
+        <button class="btn-ghost btn-sm" onclick="pomoReset()">Reset</button>
+      </div>
+      <div class="pomo-presets">
+        <button class="pomo-preset" onclick="pomoSet(25)">25 min</button>
+        <button class="pomo-preset" onclick="pomoSet(50)">50 min</button>
+        <button class="pomo-preset" onclick="pomoSet(90)">90 min</button>
+      </div>
+      <div class="pomo-total" id="pomo-total"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-label">Anotações do dia</div>
+      <textarea id="notes-textarea" class="notes-textarea" placeholder="Suas anotações aqui..."></textarea>
+      <div class="notes-status" id="notes-status"></div>
+    </div>
+  </div>
+  <div class="drawer-body" id="tab-resources" style="display:none">
+    <div id="recursos-content">
+      <p style="color:var(--mu);font-size:.82rem">Sem recursos para este dia.</p>
+    </div>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+<!-- Botão sair zen -->
+<button class="zen-exit-btn" onclick="toggleZen()" title="Sair do modo leitura">
+  <svg class="lci" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
+  Sair
+</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+if (typeof Prism !== 'undefined' && Prism.plugins && Prism.plugins.autoloader) {
+  Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+}
+
+const BASE = '';
+const DATE = '{{ date }}';
+const idx  = PLAN.findIndex(p => p.d === DATE);
+const pe   = idx >= 0 ? PLAN[idx] : null;
+const TIMER_KEY = `dataprev_t_${DATE}`;
+const Q_KEY     = `dataprev_q_${DATE}`;
+let notesTimer  = null;
+let pomoState   = { running: false, remaining: 25*60, total: 25*60, interval: null };
+let elapsedMs   = 0;
+let questoesData = [];
+let currentQ    = 0;
+let qAnswered   = {};
+let qScore      = { total: 0, acertos: 0 };
+
+// ── Barra de progresso ────────────────────────────────────────────────────
+function initProgress() {
+  if (idx < 0) return;
+  const el = document.getElementById('study-prog');
+  if (el) el.style.width = Math.round((idx + 1) / PLAN.length * 100) + '%';
+}
+
+// ── Metadados do plano ────────────────────────────────────────────────────
+function initMeta() {
+  if (!pe) return;
+  const bc = document.getElementById('s-breadcrumb');
+  if (bc) bc.innerHTML = `<span>${esc(PHASE_LABELS[pe.ph] || '')}</span> &rsaquo; Dia ${idx + 1} de ${PLAN.length}`;
+  const sm = document.getElementById('s-meta');
+  if (sm) {
+    let html = `<span class="badge badge-phase">${esc(PHASE_LABELS[pe.ph] || '')}</span>`;
+    if (pe.time && pe.time !== '—') html += `<span class="badge badge-time">${esc(pe.time)}</span>`;
+    if (pe.q    && pe.q    !== '—') html += `<span class="badge badge-q">${esc(pe.q)}</span>`;
+    html += `<span style="font-size:.75rem;color:var(--mu)">${fmtDate(pe.d)}</span>`;
+    sm.innerHTML = html;
+  }
+  const pos = document.getElementById('e-pos');
+  if (pos) pos.textContent = `${idx + 1} / ${PLAN.length}`;
+  const btnP = document.getElementById('btn-prev');
+  const btnN = document.getElementById('btn-next');
+  if (btnP) btnP.disabled = idx <= 0;
+  if (btnN) btnN.disabled = idx >= PLAN.length - 1;
+}
+
+function navStudar(dir) {
+  const ni = idx + dir;
+  if (ni < 0 || ni >= PLAN.length) return;
+  location.href = '/estudar/' + PLAN[ni].d;
+}
+
+// ── API helper ────────────────────────────────────────────────────────────
+async function apiFetch(method, path, body) {
+  try {
+    const r = await fetch(BASE + path, {
+      method,
+      headers: {'Content-Type': 'application/json'},
+      body: body ? JSON.stringify(body) : undefined
+    });
+    return await r.json();
+  } catch { return null; }
+}
+
+// ── Anotações ─────────────────────────────────────────────────────────────
+async function loadNotes() {
+  const data = await apiFetch('GET', '/api/checklist');
+  if (!data) return;
+  const row = data.find(r => r.date === DATE);
+  if (!row) return;
+  const ta = document.getElementById('notes-textarea');
+  if (ta && row.notes) ta.value = row.notes;
+  // Usa o maior entre servidor (minutos completos) e localStorage (mais preciso)
+  if (row.minutes > 0) {
+    const serverMs = row.minutes * 60000;
+    if (serverMs > elapsedMs) { elapsedMs = serverMs; updatePomoTotal(); }
+  }
+}
+
+document.getElementById('notes-textarea').addEventListener('input', function() {
+  clearTimeout(notesTimer);
+  const val = this.value;
+  notesTimer = setTimeout(async () => {
+    await apiFetch('POST', '/api/checklist/notes', { date: DATE, notes: val });
+    const s = document.getElementById('notes-status');
+    if (s) { s.textContent = 'Salvo'; setTimeout(() => s.textContent = '', 2000); }
+  }, 800);
+});
+
+// ── Timer — persistência ──────────────────────────────────────────────────
+function loadTimerState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null');
+    if (!s) return;
+    if (s.remaining != null) pomoState.remaining = s.remaining;
+    if (s.total     != null) pomoState.total     = s.total;
+    if (s.elapsed   != null) elapsedMs           = s.elapsed;
+  } catch {}
+}
+
+function saveTimerState() {
+  localStorage.setItem(TIMER_KEY, JSON.stringify({
+    remaining: pomoState.remaining,
+    total:     pomoState.total,
+    elapsed:   elapsedMs
+  }));
+}
+
+// ── Som ao final do timer ─────────────────────────────────────────────────
+function playBeep(freq, dur) {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq || 880;
+    gain.gain.setValueAtTime(0.35, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (dur || 0.7));
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + (dur || 0.7));
+  } catch {}
+}
+
+function timerDone() {
+  playBeep(880, 0.6);
+  setTimeout(() => playBeep(1100, 0.6), 700);
+  setTimeout(() => playBeep(880, 1.0), 1400);
+}
+
+// ── Pomodoro ──────────────────────────────────────────────────────────────
+function pomoFmt(s) {
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function updatePomoDisplay() {
+  const fmt = pomoFmt(pomoState.remaining);
+  const disp = document.getElementById('pomo-display');
+  if (disp) disp.textContent = fmt;
+  const pillTime = document.getElementById('pomo-pill-time');
+  if (pillTime) pillTime.textContent = fmt;
+  const label = pomoState.running ? 'Pausar'
+    : pomoState.remaining < pomoState.total ? 'Continuar' : 'Iniciar';
+  const btn  = document.getElementById('pomo-btn');
+  const pbtn = document.getElementById('pomo-pill-btn');
+  if (btn)  btn.textContent  = label;
+  if (pbtn) pbtn.textContent = label;
+  const pill = document.getElementById('pomo-pill');
+  if (pill) pill.style.display = (pomoState.running || (pomoState.remaining < pomoState.total && pomoState.remaining > 0)) ? 'flex' : 'none';
+}
+
+function updatePomoTotal() {
+  const mins = Math.floor(elapsedMs / 60000);
+  const el = document.getElementById('pomo-total');
+  if (!el) return;
+  if (mins > 0) {
+    const h = Math.floor(mins / 60), m = mins % 60;
+    el.textContent = `Total hoje: ${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'min' : ''}`;
+  } else { el.textContent = ''; }
+}
+
+function pomoToggle() {
+  if (pomoState.running) {
+    clearInterval(pomoState.interval);
+    pomoState.running = false;
+  } else {
+    if (pomoState.remaining <= 0) pomoState.remaining = pomoState.total;
+    pomoState.interval = setInterval(() => {
+      pomoState.remaining--;
+      elapsedMs += 1000;
+      saveTimerState();
+      updatePomoDisplay();
+      updatePomoTotal();
+      if (elapsedMs % 60000 === 0) {
+        apiFetch('POST', '/api/checklist/time', { date: DATE, minutes: Math.floor(elapsedMs / 60000) });
+      }
+      if (pomoState.remaining <= 0) {
+        clearInterval(pomoState.interval);
+        pomoState.running = false;
+        timerDone();
+        saveTimerState();
+        updatePomoDisplay();
+      }
+    }, 1000);
+    pomoState.running = true;
+  }
+  updatePomoDisplay();
+}
+
+function pomoReset() {
+  clearInterval(pomoState.interval);
+  pomoState.running = false;
+  pomoState.remaining = pomoState.total;
+  localStorage.removeItem(TIMER_KEY);
+  updatePomoDisplay();
+}
+
+function pomoSet(mins) {
+  clearInterval(pomoState.interval);
+  pomoState.running = false;
+  pomoState.total    = mins * 60;
+  pomoState.remaining = mins * 60;
+  updatePomoDisplay();
+}
+
+// ── Speed Dial ────────────────────────────────────────────────────────────
+function toggleSD() {
+  document.getElementById('sd-wrap').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const sd = document.getElementById('sd-wrap');
+  if (sd && sd.classList.contains('open') && !sd.contains(e.target)) {
+    sd.classList.remove('open');
+  }
+});
+
+// ── Drawer ────────────────────────────────────────────────────────────────
+function toggleDrawer(tab) {
+  const dr = document.getElementById('study-drawer');
+  const ov = document.getElementById('drawer-overlay');
+  const open = dr.classList.toggle('open');
+  ov.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open && tab) switchTab(tab);
+}
+
+function switchTab(tab) {
+  const isTools = tab === 'tools';
+  document.getElementById('tab-tools').style.display     = isTools ? 'flex' : 'none';
+  document.getElementById('tab-resources').style.display = isTools ? 'none' : 'flex';
+  document.getElementById('tab-btn-tools').classList.toggle('active', isTools);
+  document.getElementById('tab-btn-resources').classList.toggle('active', !isTools);
+}
+
+// ── Recursos ──────────────────────────────────────────────────────────────
+function renderRecursos() {
+  if (typeof RESOURCES === 'undefined') return;
+  const r  = RESOURCES[DATE];
+  const el = document.getElementById('recursos-content');
+  if (!r || !el) return;
+  const row = ([lbl, url, tag]) =>
+    `<a href="${esc(url)}" target="_blank" rel="noopener" class="rec-link">${esc(lbl)}<span class="rec-tag">${esc(tag)}</span></a>`;
+  let html = '';
+  if (r.videos?.length)    html += `<div class="rec-group"><div class="rec-group-title">Vídeos</div>${r.videos.map(row).join('')}</div>`;
+  if (r.reading?.length)   html += `<div class="rec-group"><div class="rec-group-title">Leitura</div>${r.reading.map(row).join('')}</div>`;
+  if (r.questions?.length) html += `<div class="rec-group"><div class="rec-group-title">Questões</div>${r.questions.map(row).join('')}</div>`;
+  if (r.tips?.length)      html += `<div class="rec-group"><div class="rec-group-title">Dicas FGV</div>${r.tips.map(t => `<div class="rec-tip">${t}</div>`).join('')}</div>`;
+  if (html) el.innerHTML = html;
+}
+
+function openRecursos() {
+  const dr = document.getElementById('study-drawer');
+  const ov = document.getElementById('drawer-overlay');
+  if (!dr.classList.contains('open')) {
+    dr.classList.add('open');
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  switchTab('resources');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const dr = document.getElementById('study-drawer');
+    if (dr && dr.classList.contains('open')) toggleDrawer();
+    else {
+      const sd = document.getElementById('sd-wrap');
+      if (sd && sd.classList.contains('open')) sd.classList.remove('open');
+    }
+  }
+});
+
+// ── Zen / Fullscreen ──────────────────────────────────────────────────────
+function toggleZen() {
+  document.body.classList.toggle('zen-mode');
+  const sd = document.getElementById('sd-wrap');
+  if (sd) sd.classList.remove('open');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ── Questões — persistência ───────────────────────────────────────────────
+function saveQAnswers() {
+  localStorage.setItem(Q_KEY, JSON.stringify(qAnswered));
+}
+
+function loadQAnswers() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(Q_KEY) || 'null');
+    if (!saved || !Object.keys(saved).length) return;
+    qAnswered = saved;
+    qScore = { total: 0, acertos: 0 };
+    Object.values(qAnswered).forEach(a => {
+      qScore.total++;
+      if (a.isCorrect) qScore.acertos++;
+    });
+  } catch {}
+}
+
+function retryQuestoes() {
+  if (!confirm('Apagar respostas salvas e começar novamente?')) return;
+  qAnswered = {};
+  qScore    = { total: 0, acertos: 0 };
+  currentQ  = 0;
+  localStorage.removeItem(Q_KEY);
+  renderQuestoes();
+}
+
+// ── Questões — modo quiz (uma por vez) ────────────────────────────────────
+async function loadQuestoes() {
+  const data = await apiFetch('GET', `/api/questoes?date=${DATE}`);
+  if (!data || !data.length) return;
+  // Dedup client-side por enunciado normalizado (segurança extra além do banco)
+  const seen = new Set();
+  questoesData = data.filter(q => {
+    const k = (q.enunciado || '').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 150);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+  loadQAnswers();
+  document.getElementById('study-q-section').style.display = 'block';
+  renderQuestoes();
+}
+
+function renderQuestoes() {
+  const total = questoesData.length;
+  const q     = questoesData[currentQ];
+  const ans   = qAnswered[currentQ];
+
+  // Dots de navegação
+  const dotsEl = document.getElementById('q-nav-dots');
+  if (dotsEl) {
+    dotsEl.innerHTML = questoesData.map((_, i) => {
+      const a = qAnswered[i];
+      const cls = a
+        ? (a.isCorrect ? 'q-dot-correct' : 'q-dot-wrong')
+        : (i === currentQ ? 'q-dot-current' : '');
+      return `<button class="q-dot ${cls}" onclick="goToQ(${i})" title="Questão ${i + 1}"></button>`;
+    }).join('');
+  }
+
+  // Card da questão
+  const area = document.getElementById('q-card-area');
+  if (!area) return;
+  const opts    = ['a','b','c','d','e'].filter(l => q[l]);
+  const correct = (q.gabarito || '').toLowerCase().trim();
+
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-num">
+        Questão ${currentQ + 1} de ${total}
+        ${q.fonte ? `<span class="q-fonte">${esc(q.fonte)}</span>` : ''}
+      </div>
+      <div class="q-enunciado">${esc(q.enunciado)}</div>
+      <div class="q-options">
+        ${opts.map(l => {
+          let cls = '';
+          if (ans) {
+            if (l === correct) cls = ' correct';
+            else if (l === ans.selected && !ans.isCorrect) cls = ' wrong';
+          }
+          return `<div class="q-opt${cls}" onclick="${ans ? '' : `checkAnswer('${l}')`}" style="${ans ? 'pointer-events:none' : ''}">
+            <span class="q-opt-letter">${l.toUpperCase()}</span>
+            <span class="q-opt-text">${esc(q[l])}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      ${ans ? `
+        <div class="q-feedback">
+          <div class="q-feedback-answer ${ans.isCorrect ? 'q-correct' : 'q-wrong'}">
+            ${ans.isCorrect ? '&#10003; Correto!' : `&#10007; Errado &mdash; Gabarito: ${correct.toUpperCase()}`}
+          </div>
+          ${q.explicacao ? `<div class="q-explicacao">${esc(q.explicacao)}</div>` : ''}
+        </div>` : ''}
+    </div>`;
+
+  // Controles de navegação
+  const ctrl = document.getElementById('q-controls');
+  if (ctrl) {
+    const answeredCount = Object.keys(qAnswered).length;
+    const allDone = answeredCount === total;
+    ctrl.innerHTML = `
+      <button class="btn-ghost btn-sm" onclick="goToQ(${currentQ - 1})" ${currentQ === 0 ? 'disabled' : ''}>&#8592; Anterior</button>
+      <span class="study-pos">${currentQ + 1} / ${total}</span>
+      <button class="btn-ghost btn-sm q-next-btn" onclick="goToQ(${currentQ + 1})" ${currentQ >= total - 1 ? 'disabled' : ''} ${!ans ? 'style="visibility:hidden"' : ''}>Pr&#243;xima &#8594;</button>
+      ${allDone ? `<div class="q-retry-row"><button class="btn-ghost btn-sm" onclick="retryQuestoes()" title="Apagar respostas e tentar de novo">&#8635; Responder novamente</button></div>` : ''}`;
+  }
+
+  updateQScore();
+}
+
+function goToQ(i) {
+  if (i < 0 || i >= questoesData.length) return;
+  currentQ = i;
+  renderQuestoes();
+}
+
+function checkAnswer(selected) {
+  if (qAnswered[currentQ]) return;
+  const q       = questoesData[currentQ];
+  const correct = (q.gabarito || '').toLowerCase().trim();
+  const isCorrect = selected === correct;
+  qAnswered[currentQ] = { selected, isCorrect };
+  qScore.total++;
+  if (isCorrect) qScore.acertos++;
+  saveQAnswers();
+  renderQuestoes();
+}
+
+function updateQScore() {
+  const el = document.getElementById('q-score');
+  if (!el || !qScore.total) return;
+  el.textContent = `${qScore.acertos}/${qScore.total} corretas`;
+  el.className   = 'study-q-score ' + (qScore.acertos / qScore.total >= 0.7 ? 'score-good' : 'score-bad');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadTimerState();
+initProgress();
+initMeta();
+renderRecursos();
+updatePomoDisplay();
+updatePomoTotal();
+loadNotes();
+loadQuestoes();
+</script>
+{% endblock %}

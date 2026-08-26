@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+{% block title %}Edital – DATAPREV 2026{% endblock %}
+
+{% block content %}
+<div class="et-wrap">
+
+  <div class="et-header">
+    <div class="et-title">Edital 001/2026 — DATAPREV</div>
+    <div class="et-subtitle">Analista de Tecnologia da Informação · Perfil 3 – Desenvolvimento de Software · FGV</div>
+  </div>
+
+  <div class="et-tabs" role="tablist">
+    <button class="et-tab active" data-tab="visao" onclick="showTab('visao')" role="tab">Visão Geral</button>
+    <button class="et-tab" data-tab="estrategia" onclick="showTab('estrategia')" role="tab">Estratégia</button>
+    <button class="et-tab" data-tab="ementa" onclick="showTab('ementa')" role="tab">Ementa</button>
+    <button class="et-tab" data-tab="pdf" onclick="showTab('pdf')" role="tab">
+      <svg class="lci" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Edital PDF
+    </button>
+  </div>
+
+  <!-- ── VISÃO GERAL ──────────────────────────────────────────────── -->
+  <div class="et-panel active" id="panel-visao">
+
+    <div class="et-2col">
+
+      <div>
+        <div class="et-section">
+          <div class="et-section-title">Visão Geral</div>
+          <table class="info-table">
+            <tr><td>Edital</td><td>001/2026</td></tr>
+            <tr><td>Cargo</td><td>Analista de Tecnologia da Informação</td></tr>
+            <tr><td>Perfil</td><td>3 — Desenvolvimento de Software</td></tr>
+            <tr><td>Remuneração inicial</td><td><strong>R$ 10.685,44</strong></td></tr>
+            <tr><td>Jornada</td><td>40h semanais / CLT</td></tr>
+            <tr><td>Banca</td><td>FGV</td></tr>
+            <tr><td>Lotação inicial</td><td>Florianópolis / SC</td></tr>
+            <tr><td>Taxa de inscrição</td><td>R$ 110,00</td></tr>
+          </table>
+        </div>
+
+        <div class="et-section">
+          <div class="et-section-title">Links Oficiais</div>
+          <table class="info-table">
+            <tr><td>Portal FGV</td><td><a href="https://conhecimento.fgv.br/concursos/dataprev26" target="_blank" rel="noopener" class="et-link">conhecimento.fgv.br/concursos/dataprev26</a></td></tr>
+            <tr><td>E-mail FGV</td><td><a href="mailto:concursodataprev26@fgv.br" class="et-link">concursodataprev26@fgv.br</a></td></tr>
+            <tr><td>Telefone FGV</td><td>0800 591 3078</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="et-section">
+          <div class="et-section-title">Cronograma</div>
+          <table class="info-table">
+            <tr><td>Publicação do edital</td><td>03/07/2026</td></tr>
+            <tr><td>Abertura das inscrições</td><td>06/07/2026 às 16h</td></tr>
+            <tr><td>Solicitação de isenção</td><td>06/07 a 08/07/2026</td></tr>
+            <tr><td>Encerramento das inscrições</td><td>06/08/2026 às 16h</td></tr>
+            <tr><td>Limite de pagamento</td><td>07/08/2026</td></tr>
+            <tr><td class="et-prova-row">&#x1F3AF; Prova Objetiva</td><td class="et-prova-row"><strong>11/10/2026 · 13h–17h</strong> (portões: 12h30)</td></tr>
+            <tr><td>Heteroidentificação / Biopsicossocial</td><td>11/11/2026 (provável)</td></tr>
+            <tr><td>Entrevista / Perícia Médica</td><td>22/11/2026 (provável)</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Estrutura das Provas</div>
+      <table class="info-table">
+        <thead><tr><th>Módulo</th><th>Disciplina</th><th>Q</th><th>Peso</th><th>Pts</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td>Língua Portuguesa</td><td>12</td><td>1</td><td>12</td></tr>
+          <tr><td>I</td><td>Língua Inglesa</td><td>12</td><td>1</td><td>12</td></tr>
+          <tr><td>I</td><td>Raciocínio Lógico-Matemático</td><td>5</td><td>1</td><td>5</td></tr>
+          <tr><td>I</td><td>Atualidades e IA</td><td>6</td><td>1</td><td>6</td></tr>
+          <tr><td>I</td><td>Legislação Seg. Info. / LGPD</td><td>5</td><td>1</td><td>5</td></tr>
+          <tr class="et-row-total"><td><strong>I</strong></td><td><strong>Subtotal Módulo I</strong></td><td><strong>40</strong></td><td></td><td><strong>40</strong></td></tr>
+          <tr><td>II</td><td>Conhecimentos Específicos</td><td>30</td><td>2,5</td><td>75</td></tr>
+          <tr class="et-row-total"><td colspan="2"><strong>Total</strong></td><td><strong>70</strong></td><td></td><td><strong>115</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="et-callout">
+        <strong>Aprovação</strong> (cumulativo): ≥ 57,5 pts na prova objetiva <strong>+</strong> não zerar nenhuma disciplina individualmente.
+      </div>
+      <div class="et-section-subtitle">Critérios de Desempate (em ordem)</div>
+      <ol class="et-list">
+        <li>Idade ≥ 60 anos</li>
+        <li>Maior nota — Conhecimentos Específicos</li>
+        <li>Maior nota — Língua Portuguesa</li>
+        <li>Maior nota — Língua Inglesa</li>
+        <li>Exerceu função de jurado (Lei 11.689/2008)</li>
+        <li>Candidato mais velho</li>
+      </ol>
+    </div>
+
+    <div class="et-2col">
+      <div>
+        <div class="et-section">
+          <div class="et-section-title">Cargo — Requisitos</div>
+          <p class="et-p">Diploma de nível superior (bacharelado ou tecnólogo) em:</p>
+          <ul class="et-list">
+            <li>Tecnologia da Informação; <strong>ou</strong></li>
+            <li>Qualquer formação + pós-graduação ≥ 360h em TI (reconhecida pelo MEC)</li>
+          </ul>
+          <div class="et-section-subtitle" style="margin-top:.9rem">Atribuições</div>
+          <ul class="et-list">
+            <li>Codificar softwares (transacionais, analíticos, mobile, API)</li>
+            <li>Levantar e especificar requisitos</li>
+            <li>Mensurar software (pontos de função / story points)</li>
+            <li>Planejar e executar testes: funcionais, desempenho, SAST/DAST</li>
+            <li>Desenvolver rotinas de ingestão e integração de dados (ETL/ELT, datalake)</li>
+            <li>Definir padrões de desenvolvimento, segurança e reuso</li>
+            <li>Construir aplicações analíticas, relatórios e dashboards BI</li>
+            <li>Automatizar deploy e provisionamento (DevSecOps)</li>
+            <li>Gestão técnica do ciclo de desenvolvimento de software</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="et-section">
+          <div class="et-section-title">Benefícios</div>
+          <table class="info-table">
+            <tr><td>Salário nominal</td><td>R$ 9.423,30</td></tr>
+            <tr><td>Adicional de atividade</td><td>R$ 1.262,14</td></tr>
+            <tr><td><strong>Remuneração inicial</strong></td><td><strong>R$ 10.685,44</strong></td></tr>
+            <tr><td>Ticket alimentação/refeição</td><td>R$ 1.357,20</td></tr>
+            <tr><td>Auxílio pré-escolar/escolar</td><td>Até R$ 1.758,35</td></tr>
+            <tr><td>Auxílio PCD (filhos)</td><td>Até R$ 1.230,00</td></tr>
+            <tr><td>Previdência complementar</td><td>Prevdata</td></tr>
+            <tr><td>PLR</td><td>Conforme regras</td></tr>
+            <tr><td>Seguro de vida</td><td>Incluso</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Vagas por Cidade — Perfil 3</div>
+      <table class="info-table">
+        <thead><tr><th>Cidade</th><th>Imediatas</th><th>Cadastro de Reserva</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>Brasília / DF</td><td>0</td><td>17</td><td>17</td></tr>
+          <tr><td>Rio de Janeiro / RJ</td><td>0</td><td>17</td><td>17</td></tr>
+          <tr><td>São Paulo / SP</td><td>0</td><td>17</td><td>17</td></tr>
+          <tr><td>Fortaleza / CE</td><td>20</td><td>80</td><td>100</td></tr>
+          <tr><td>João Pessoa / PB</td><td>20</td><td>80</td><td>100</td></tr>
+          <tr><td>Natal / RN</td><td>20</td><td>80</td><td>100</td></tr>
+          <tr><td>Florianópolis / SC</td><td>20</td><td>80</td><td>100</td></tr>
+          <tr class="et-row-total"><td><strong>Total</strong></td><td><strong>80</strong></td><td><strong>371</strong></td><td><strong>451</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="et-note">Provas em todas as capitais. Candidato escolhe <strong>uma única capital</strong> no ato da inscrição. Lotação inicial: <strong>Florianópolis / SC</strong>.</p>
+    </div>
+
+  </div><!-- /panel-visao -->
+
+  <!-- ── ESTRATÉGIA ──────────────────────────────────────────────── -->
+  <div class="et-panel" id="panel-estrategia">
+
+    <div class="et-section">
+      <div class="et-section-title">Priorização de Disciplinas</div>
+      <table class="info-table">
+        <thead><tr><th>Disciplina</th><th>Q</th><th>Pts</th><th>Prioridade</th><th>Observações</th></tr></thead>
+        <tbody>
+          <tr><td>Conhecimentos Específicos</td><td>30</td><td>75</td><td><span class="badge-pri-alta">Alta</span></td><td>Peso 2,5 — maior impacto</td></tr>
+          <tr><td>Língua Portuguesa</td><td>12</td><td>12</td><td><span class="badge-pri-alta">Alta</span></td><td>Não zerar</td></tr>
+          <tr><td>Língua Inglesa</td><td>12</td><td>12</td><td><span class="badge-pri-alta">Alta</span></td><td>Não zerar</td></tr>
+          <tr><td>Legislação Seg. Info. / LGPD</td><td>5</td><td>5</td><td><span class="badge-pri-alta">Alta</span></td><td>Legislação explícita no edital</td></tr>
+          <tr><td>Atualidades e IA</td><td>6</td><td>6</td><td><span class="badge-pri-media">Média</span></td><td>Imprevisível, boa relação custo/benefício</td></tr>
+          <tr><td>Raciocínio Lógico</td><td>5</td><td>5</td><td><span class="badge-pri-media">Média</span></td><td>Não zerar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Módulo I — Conteúdo Programático Completo</div>
+
+      <div class="et-disc-card">
+        <h4>Língua Portuguesa <span class="et-disc-meta">12 questões · peso 1</span></h4>
+        <ul>
+          <li>Compreensão e interpretação de textos</li>
+          <li>Tipos e gêneros textuais</li>
+          <li>Ortografia oficial</li>
+          <li>Coesão textual: referenciação, substituição, repetição, conectores, sequenciação, tempos/modos verbais</li>
+          <li>Morfossintaxe: classes de palavras, coordenação, subordinação, pontuação</li>
+          <li>Concordância verbal e nominal</li>
+          <li>Regência verbal e nominal</li>
+          <li>Crase</li>
+          <li>Colocação pronominal</li>
+          <li>Reescrita: significação, substituição, reorganização, adequação de registro</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Língua Inglesa <span class="et-disc-meta">12 questões · peso 1</span></h4>
+        <ul>
+          <li>Compreensão de textos em inglês</li>
+          <li>Itens gramaticais relevantes para compreensão de sentidos</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Raciocínio Lógico-Matemático <span class="et-disc-meta">5 questões · peso 1</span></h4>
+        <ul>
+          <li>Estruturas lógicas</li>
+          <li>Lógica de argumentação: analogias, inferências, deduções, conclusões</li>
+          <li>Lógica proposicional: proposições simples/compostas, tabelas-verdade, equivalências, diagramas</li>
+          <li>Lógica de primeira ordem</li>
+          <li>Raciocínio aritmético, geométrico e matricial</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Atualidades e Inteligência Artificial <span class="et-disc-meta">6 questões · peso 1</span></h4>
+        <ul>
+          <li>Tópicos atuais: segurança, transportes, política, economia, sociedade, educação, saúde, cultura, tecnologia, energia, relações internacionais, sustentabilidade, ecologia</li>
+          <li>IA: conceitos, aprendizado de máquina, modelos generativos e de linguagem, ética, governança, privacidade em IA</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Legislação — Segurança da Informação e Proteção de Dados <span class="et-disc-meta">5 questões · peso 1</span></h4>
+        <table class="info-table" style="margin-top:.4rem">
+          <thead><tr><th>Lei / Decreto</th><th>Escopo</th></tr></thead>
+          <tbody>
+            <tr><td>Lei 12.527/2011 (LAI)</td><td>Cap. I, II, III, IV, V + Dec. 7.724 e 7.845</td></tr>
+            <tr><td>Lei 12.737/2012 (Crimes Informáticos)</td><td>Art. 2º</td></tr>
+            <tr><td>Lei 12.965/2014 (Marco Civil da Internet)</td><td>Cap. II Seção I; Cap. III Seções I e II</td></tr>
+            <tr><td>Lei 13.709/2018 (LGPD)</td><td>Cap. I, II, III, IV, VII, VIII, IX</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /panel-estrategia -->
+
+  <!-- ── EMENTA ─────────────────────────────────────────────────── -->
+  <div class="et-panel" id="panel-ementa">
+
+    <div class="et-callout" style="margin-bottom:1.25rem">
+      <strong>Módulo II — Conhecimentos Específicos</strong> · 30 questões · peso 2,5 · 75 pontos
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Desenvolvimento de Sistemas</div>
+
+      <div class="et-disc-card">
+        <h4>Linguagens, Frameworks e Plataformas</h4>
+        <p class="et-card-p">Java (≥6), JavaEE (≥6), JakartaEE, JPA (≥2), JavaScript; JUnit, Hibernate, JSF, Primefaces, Spring, SpringCloud, SpringBoot; mobile (Android, iOS); low-code / no-code</p>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Arquitetura de Software</h4>
+        <ul>
+          <li>Interoperabilidade; SOA; web services; mensageria; API; Swagger; OO</li>
+          <li>Arquitetura web; servidores de aplicação e web</li>
+          <li>Microsserviços (orquestração, API gateway); containers</li>
+          <li>Arquitetura hexagonal; transações distribuídas</li>
+          <li>Blockchain; design de software</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Padrões de Dados e Protocolos</h4>
+        <ul>
+          <li>XML, XSLT, UDDI</li>
+          <li>REST, JSON, HTTP verbs, status codes</li>
+          <li>HTTPS; SSL/TLS</li>
+          <li>Internet, extranet, intranet, portal: características físicas/lógicas</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>DevOps, Git e Qualidade de Código</h4>
+        <ul>
+          <li>DevOps: cultura, CI/CD, pipeline</li>
+          <li>GIT: versionamento, GitFlow, GitHub Flow</li>
+          <li>Clean code; SonarQube (análise estática)</li>
+          <li>SOLID, DRY, KISS, YAGNI</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Testes</h4>
+        <ul>
+          <li>Unitários, integração, ágeis, usabilidade, automatizados</li>
+          <li>TDD; gestão do ciclo de vida de testes (STLC)</li>
+          <li>RPA (Robotic Process Automation)</li>
+          <li>SAST e DAST</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Metodologias Ágeis</h4>
+        <ul>
+          <li>Scrum · Kanban · XP</li>
+          <li>Estimativas: Ponto de Função; Story Points</li>
+          <li>Engenharia de Requisitos: classificação, elicitação, processo</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>Frontend</h4>
+        <ul>
+          <li>HTML, CSS, Ajax, UX</li>
+          <li>VueJS, Angular, React</li>
+          <li>SPA; PWA; padrões frontend</li>
+          <li>Arquitetura de informação; portais corporativos; acessibilidade; usabilidade</li>
+        </ul>
+      </div>
+
+      <div class="et-disc-card">
+        <h4>IA, Análise de Dados e Big Data</h4>
+        <ul>
+          <li>Conceitos de IA; análise de dados; Big Data</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Inteligência de Negócios (Business Intelligence)</div>
+      <div class="et-disc-card">
+        <ul>
+          <li>Conceitos, fundamentos, técnicas e métodos de BI</li>
+          <li>Sistemas de suporte à decisão e gestão de conteúdo</li>
+          <li>Arquitetura e aplicações de data warehouse com ETL e OLAP</li>
+          <li>Definições e conceitos de data warehouse e data mining</li>
+          <li>Visualização de dados: BDs individuais e cubos</li>
+          <li>Mapeamento de fontes de dados: técnicas de coleta</li>
+          <li>Arquitetura de BI</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Segurança da Informação</div>
+      <div class="et-disc-card">
+        <ul>
+          <li>Políticas de segurança da informação</li>
+          <li>Procedimentos de segurança; conceitos gerais de gerenciamento</li>
+          <li>ABNT NBR ISO/IEC 27001:2022 e ISO/IEC 27002:2022</li>
+          <li>Confiabilidade, integridade e disponibilidade (CIA)</li>
+          <li>Mecanismos de segurança: controle de acesso; OAuth2; SSO (Single Sign-On)</li>
+          <li>Gerência de riscos: ameaça, vulnerabilidade, impacto</li>
+          <li>SDL (Security Development Lifecycle); OWASP Top 10</li>
+          <li>SAST (Static Application Security Testing) e DAST (Dynamic Application Security Testing)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Banco de Dados</div>
+      <div class="et-disc-card">
+        <ul>
+          <li>Modelagem de dados: conceitual, lógica e física</li>
+          <li>Abordagem relacional e multidimensional</li>
+          <li>Normalização das estruturas de dados</li>
+          <li>Integridade referencial</li>
+          <li>SQL — DDL, DML, DQL, Window Functions, Transações</li>
+          <li>SGBD e propriedades de banco de dados (ACID)</li>
+          <li>Banco de dados NoSQL; banco de dados em memória</li>
+          <li>Data lakes e soluções para Big Data</li>
+          <li>Técnicas de integração e ingestão de dados: ETL/ELT</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="et-section">
+      <div class="et-section-title">Gestão e Governança de TI</div>
+      <div class="et-disc-card">
+        <h4>Gerenciamento de Projetos</h4>
+        <ul>
+          <li>Conceitos; projetos, programas, portfólio; áreas de conhecimento</li>
+          <li>Abordagens: tradicional, híbrida, ágil (Scrum, Lean, Kanban)</li>
+          <li>Guia Scrum de prática ágil</li>
+          <li>Grupos de processos e áreas de conhecimento</li>
+          <li>Gestão de Riscos</li>
+        </ul>
+      </div>
+      <div class="et-disc-card">
+        <h4>ITIL v4</h4>
+        <ul>
+          <li>Conceitos básicos, disciplinas, estrutura e objetivos</li>
+        </ul>
+      </div>
+      <div class="et-disc-card">
+        <h4>COBIT 2019</h4>
+        <ul>
+          <li>Conceitos básicos, estrutura e objetivos</li>
+        </ul>
+      </div>
+      <div class="et-disc-card">
+        <h4>BPM / BPMN</h4>
+        <ul>
+          <li>Conceitos de gestão de processos</li>
+          <li>Modelagem de processos de negócio com BPMN</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /panel-ementa -->
+
+  <!-- ── EDITAL PDF ─────────────────────────────────────────────── -->
+  <div class="et-panel" id="panel-pdf">
+    <div class="pdf-viewer">
+      <div class="pdf-toolbar">
+        <a href="/static/edital.pdf" download="Edital-DATAPREV-2026.pdf" class="btn btn-primary btn-sm">
+          <svg class="lci" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </a>
+        <a href="/static/edital.pdf" target="_blank" rel="noopener" class="btn-ghost btn-sm">Abrir em nova aba</a>
+        <span class="et-note" style="margin:0">edital-dataprev_supe-versaofinal.pdf · ~1 MB</span>
+      </div>
+      <embed src="/static/edital.pdf" type="application/pdf" class="pdf-embed" title="Edital DATAPREV 2026">
+      <div class="pdf-fallback">
+        <p>Seu navegador não suporta a visualização inline de PDF.</p>
+        <a href="/static/edital.pdf" download class="btn-ghost btn-sm">Clique aqui para fazer download</a>
+      </div>
+    </div>
+  </div><!-- /panel-pdf -->
+
+</div><!-- /et-wrap -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTab(id) {
+  document.querySelectorAll('.et-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.et-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+  history.replaceState(null, '', '/edital#' + id);
+}
+
+// Restaurar aba do hash
+const h = location.hash.slice(1);
+if (['visao','estrategia','ementa','pdf'].includes(h)) showTab(h);
+</script>
+{% endblock %}

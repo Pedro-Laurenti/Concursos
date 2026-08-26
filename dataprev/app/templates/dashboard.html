@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – DATAPREV 2026{% endblock %}
+
+{% block content %}
+  <!-- COUNTDOWN -->
+  <div class="card card-accent countdown" style="margin-bottom:1.25rem">
+    <div>
+      <div class="cd-label">Tempo até a prova</div>
+      <div class="cd-row" style="margin-top:.4rem">
+        <div class="cd-box"><div class="n" id="d">--</div><div class="l">d</div></div>
+        <div class="cd-box"><div class="n" id="h">--</div><div class="l">h</div></div>
+        <div class="cd-box"><div class="n" id="m">--</div><div class="l">m</div></div>
+        <div class="cd-box"><div class="n" id="s">--</div><div class="l">s</div></div>
+      </div>
+    </div>
+    <div class="cd-info"><strong>11/10/2026 · 13h</strong><br>Florianópolis/SC</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid" id="stats"></div>
+
+  <!-- MARCOS DO CONCURSO -->
+  <div class="sec">
+    <div class="sec-title">Checklist do concurso</div>
+    <div class="card marcos-card" id="marcos-card"></div>
+  </div>
+
+  <!-- DATAS CRÍTICAS -->
+  <div class="sec" id="critical-sec" style="display:none">
+    <div class="sec-title">Datas críticas</div>
+    <div class="card dates-card" id="datas-criticas"></div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="sec">
+    <div class="sec-title">Heatmap – 12 semanas de estudo</div>
+    <div class="card heatmap-wrap">
+      <div class="hm-legend">
+        <span class="hm-leg"><div class="hm-dot" style="background:var(--gn)"></div>Concluído</span>
+        <span class="hm-leg"><div class="hm-dot" style="background:rgba(248,81,73,.3)"></div>Perdido</span>
+        <span class="hm-leg"><div class="hm-dot" style="background:var(--sf2)"></div>Futuro</span>
+        <span class="hm-leg"><div class="hm-dot" style="border:2px solid var(--ac);border-radius:3px;background:var(--sf2)"></div>Hoje</span>
+      </div>
+      <div class="hm-grid" id="hm"></div>
+    </div>
+  </div>
+
+  <!-- PHASE BARS -->
+  <div class="sec">
+    <div class="sec-title">Progresso por fase</div>
+    <div class="phase-list" id="phases"></div>
+  </div>
+
+  <!-- ÚLTIMO SIMULADO -->
+  <div class="sec">
+    <div class="sec-title">Último simulado</div>
+    <div id="sim-box"></div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const BASE = '';
+
+async function load() {
+  const [cl, sims] = await Promise.all([
+    fetch(BASE+'/api/checklist').then(r=>r.json()).catch(()=>null),
+    fetch(BASE+'/api/simulados').then(r=>r.json()).catch(()=>null)
+  ]);
+  const done = cl ? new Set(cl.filter(r=>r.done).map(r=>r.date)) : new Set();
+  renderMarcos();
+  renderCriticalDates();
+  renderStats(done);
+  renderHeatmap(done);
+  renderPhases(done);
+  renderLastSim(sims);
+}
+
+function renderCriticalDates() {
+  const today = todayStr();
+  const critical = PLAN.filter(p => (p.alert || p.exam) && p.d >= today);
+  const sec = document.getElementById('critical-sec');
+  const el = document.getElementById('datas-criticas');
+  if (!critical.length) { sec.style.display='none'; return; }
+  sec.style.display='';
+  el.innerHTML = critical.map(p => {
+    const [y,mo,d] = p.d.split('-').map(Number);
+    const daysLeft = Math.max(0, Math.ceil((new Date(y,mo-1,d) - new Date()) / 86400000));
+    const urgency = daysLeft <= 3 ? 'urgent' : daysLeft <= 21 ? 'near' : p.exam ? 'exam-day' : '';
+    const shortTopic = p.exam ? 'DIA DA PROVA – DATAPREV 2026' : p.t;
+    return `<div class="date-item">
+      <div class="date-badge ${urgency}"><div class="dbn">${daysLeft}</div><div class="dbl">${daysLeft===1?'dia':'dias'}</div></div>
+      <div style="flex:1;min-width:0">
+        <div class="date-main-label${p.exam?' exam-label':''}">${esc(shortTopic.slice(0,70))}</div>
+        ${p.alert?`<div class="date-alert-txt">${alertHtml(p.alert)}</div>`:''}
+      </div>
+      <div class="date-when">${fmtDate(p.d)}</div>
+    </div>`;
+  }).join('');
+}
+
+function calcStreak(done) {
+  const today = todayStr();
+  const past = PLAN.filter(p=>p.d<=today).map(p=>p.d);
+  let cur=0; for(let i=past.length-1;i>=0;i--){if(done.has(past[i]))cur++;else break;}
+  let max=0,streak=0; for(const d of past){if(done.has(d)){streak++;max=Math.max(max,streak);}else streak=0;}
+  return {cur,max};
+}
+
+function renderStats(done) {
+  const today=todayStr();
+  const past=PLAN.filter(p=>p.d<=today);
+  const dc=[...done].filter(d=>d<=today).length;
+  const pct=past.length?Math.round(dc/past.length*100):0;
+  const {cur,max}=calcStreak(done);
+  const remaining=PLAN.filter(p=>p.d>today&&p.d<='2026-10-10').length;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-card"><div class="val gn">${cur}</div><div class="lbl">Streak atual (dias)</div></div>
+    <div class="stat-card"><div class="val">${max}</div><div class="lbl">Maior streak</div></div>
+    <div class="stat-card"><div class="val yw">${pct}%</div><div class="lbl">Concluído até hoje</div></div>
+    <div class="stat-card"><div class="val">${dc}/${past.length}</div><div class="lbl">Dias marcados</div></div>
+    <div class="stat-card"><div class="val">${remaining}</div><div class="lbl">Dias restantes</div></div>`;
+}
+
+function renderHeatmap(done) {
+  const today=todayStr();
+  let html='';
+  for(let w=0;w<12;w++){
+    html+=`<span class="hm-lbl">S${w+1}</span>`;
+    for(let d=0;d<7;d++){
+      const p=PLAN[w*7+d];
+      if(!p){html+='<div class="cell"></div>';continue;}
+      let cls='cell future';
+      if(p.exam) cls='cell exam';
+      else if(p.d<today) cls=done.has(p.d)?'cell done':'cell missed';
+      else if(p.d===today) cls=(done.has(p.d)?'cell done ':'cell ')+'today';
+      html+=`<div class="${cls}" title="${fmtDate(p.d)}: ${esc(p.t.slice(0,50))}"></div>`;
+    }
+  }
+  document.getElementById('hm').innerHTML=html;
+}
+
+function renderPhases(done) {
+  const today=todayStr();
+  const phases=[1,2,3,4];
+  document.getElementById('phases').innerHTML=phases.map(ph=>{
+    const days=PLAN.filter(p=>p.ph===ph);
+    const past=days.filter(p=>p.d<=today);
+    const dc=past.filter(p=>done.has(p.d)).length;
+    const pct=past.length?Math.round(dc/past.length*100):0;
+    return `<div class="card ph-item">
+      <div class="ph-header"><span class="ph-name">${PHASE_LABELS[ph]}</span><span class="ph-pct">${pct}%</span></div>
+      <div class="ph-track"><div class="ph-fill p${ph}" style="width:${pct}%"></div></div>
+      <div class="ph-sub"><span>${dc}/${past.length} dias concluídos</span><span>${days.length} dias no total</span></div>
+    </div>`;
+  }).join('');
+}
+
+function calcSimScore(s) {
+  return s.especifico*2.5 + s.portugues + s.ingles + s.logica + s.legislacao + s.atualidades;
+}
+
+function renderLastSim(sims) {
+  const el=document.getElementById('sim-box');
+  if(!sims||!sims.length){
+    el.innerHTML='<div class="card" style="padding:1rem 1.2rem"><div class="empty-sim">Nenhum simulado registrado ainda. <a href="/simulados" style="color:var(--ac)">Registrar →</a></div></div>';
+    return;
+  }
+  const s=sims[0];
+  const score=calcSimScore(s);
+  const pass=score>=57.5;
+  el.innerHTML=`<div class="card sim-box-dash">
+    <div>
+      <div class="sim-score-big ${pass?'pass':'fail'}">${score.toFixed(1)} pts</div>
+      <div class="sim-meta">${s.date} · ${pass?`${ic('circle-check')} Aprovado`:`${ic('circle-x')} Abaixo do mínimo (57,5)`}</div>
+    </div>
+    <div style="font-size:.78rem;color:var(--mu)">
+      Específico: ${(s.especifico*2.5).toFixed(1)} · Port: ${s.portugues} · Ingl: ${s.ingles}<br>
+      Lógica: ${s.logica} · Legisl: ${s.legislacao} · Atual: ${s.atualidades}
+    </div>
+    <a href="/simulados" class="sim-link">Ver todos →</a>
+  </div>`;
+}
+
+// Marcos
+function marcosState(){try{return JSON.parse(localStorage.getItem(MARCOS_KEY)||'{}');}catch{return{};}}
+function toggleMarco(id){
+  if(MARCOS.find(m=>m.id===id)?.exam)return;
+  const s=marcosState();s[id]=!s[id];
+  localStorage.setItem(MARCOS_KEY,JSON.stringify(s));renderMarcos();
+}
+function renderMarcos(){
+  const st=marcosState(),today=todayStr(),el=document.getElementById('marcos-card');
+  if(!el)return;
+  el.innerHTML=MARCOS.map(m=>{
+    const done=!!st[m.id];
+    const dL=m.date?Math.ceil((new Date(m.date+'T23:59:59')-new Date())/86400000):null;
+    const isPast=m.date&&m.date<today;
+    let pill='';
+    if(m.exam&&dL!==null)pill=`<span class="badge-pill pill-exam">${dL}d</span>`;
+    else if(!done&&isPast)pill='<span class="badge-pill pill-past">passado</span>';
+    else if(!done&&dL!==null){
+      if(dL<=7)pill=`<span class="badge-pill pill-urgent">⚠ ${dL}d</span>`;
+      else if(dL<=30)pill=`<span class="badge-pill pill-near">${dL}d</span>`;
+      else pill=`<span class="badge-pill pill-far">${dL}d</span>`;
+    }
+    const dlbl=m.date?fmtDate(m.date)+(m.time?' '+m.time:''):'—';
+    return `<div class="marco-item${done?' done-item':''}${m.exam?' exam-item':''}" onclick="toggleMarco('${m.id}')">
+      <div class="marco-chk">${done?'✓':''}</div>
+      <div class="marco-label">${esc(m.label)}</div>
+      <div class="marco-dlbl">${dlbl}</div>
+      ${pill}
+    </div>`;
+  }).join('');
+}
+
+// Countdown
+const exam=new Date('2026-10-11T13:00:00');
+function tick(){const df=exam-new Date();if(df<=0)return;const dv=Math.floor(df/86400000),hv=Math.floor(df%86400000/3600000),mv=Math.floor(df%3600000/60000),sv=Math.floor(df%60000/1000);['d','h','m','s'].forEach((id,i)=>document.getElementById(id).textContent=String([dv,hv,mv,sv][i]).padStart(2,'0'));}
+tick();setInterval(tick,1000);
+load();
+</script>
+{% endblock %}

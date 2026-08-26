@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>{% block title %}DATAPREV 2026{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="app-shell">
+
+  <nav class="app-nav">
+    <a href="{{ url_for('checklist_page') }}" class="nav-brand">
+      <span class="nav-logo">D</span>
+      <span class="nav-brand-text">data<strong>prev</strong></span>
+      <span class="nav-brand-year">2026</span>
+    </a>
+    <a href="{{ url_for('checklist_page') }}"
+       class="nav-link {% if active_page == 'checklist' %}active{% endif %}">
+      <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+      Checklist
+    </a>
+    <a href="{{ url_for('dashboard_page') }}"
+       class="nav-link {% if active_page == 'dashboard' %}active{% endif %}">
+      <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="{{ url_for('simulados_page') }}"
+       class="nav-link {% if active_page == 'simulados' %}active{% endif %}">
+      <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="12" y1="16" x2="16" y2="16"/><circle cx="8" cy="11" r=".5" fill="currentColor"/><circle cx="8" cy="16" r=".5" fill="currentColor"/></svg>
+      Simulados
+    </a>
+    <a href="{{ url_for('edital_page') }}"
+       class="nav-link {% if active_page == 'edital' %}active{% endif %}">
+      <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Edital
+    </a>
+  </nav>
+
+  <main class="app-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="app-footer">
+    v2.0.0 · 2026-08-25 · DATAPREV 2026
+  </footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='icons.js') }}"></script>
+<script src="{{ url_for('static', filename='plan-data.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

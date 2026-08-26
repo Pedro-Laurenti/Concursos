@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% block title %}Simulados – DATAPREV 2026{% endblock %}
+
+{% block content %}
+  <!-- TABS -->
+  <div class="tabs" id="main-tabs"></div>
+
+  <!-- TAB: REGISTRAR -->
+  <div id="tab-registrar">
+    <div class="sec-title">Registrar simulado</div>
+    <div class="card banco-form-card" style="margin-bottom:1.5rem">
+      <div class="form-grid">
+        <div class="field">
+          <label class="form-label">Data</label>
+          <input class="form-input" type="date" id="f-date"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Específico (0–30 questões)</label>
+          <input class="form-input" type="number" id="f-esp" min="0" max="30" value="0" oninput="preview()"/>
+          <div class="form-hint">× 2,5 pts = máx 75 pts</div>
+        </div>
+        <div class="field">
+          <label class="form-label">Português (0–12)</label>
+          <input class="form-input" type="number" id="f-por" min="0" max="12" value="0" oninput="preview()"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Inglês (0–12)</label>
+          <input class="form-input" type="number" id="f-ing" min="0" max="12" value="0" oninput="preview()"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Raciocínio Lógico (0–5)</label>
+          <input class="form-input" type="number" id="f-log" min="0" max="5" value="0" oninput="preview()"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Legislação (0–5)</label>
+          <input class="form-input" type="number" id="f-leg" min="0" max="5" value="0" oninput="preview()"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Atualidades/IA (0–6)</label>
+          <input class="form-input" type="number" id="f-atu" min="0" max="6" value="0" oninput="preview()"/>
+        </div>
+        <div class="field">
+          <label class="form-label">Observações (opcional)</label>
+          <input class="form-input" type="text" id="f-notes" placeholder="ex: travei em SQL"/>
+        </div>
+      </div>
+      <div class="score-preview" id="prev">
+        <div><div class="preview-score na" id="pv-score">0,0</div><div class="preview-label">pontos / 115 · mín 57,5</div></div>
+        <div class="preview-bars" id="pv-bars"></div>
+      </div>
+      <div class="zero-warn" id="zero-warn"></div>
+      <button class="btn btn-primary" onclick="submit()">Salvar simulado</button>
+    </div>
+
+    <div class="sec-title">Evolução</div>
+    <div class="card evo" id="evo"><div class="empty">Nenhum simulado registrado ainda.</div></div>
+
+    <div class="sec-title" style="margin-top:1.5rem">Histórico</div>
+    <div class="pass-line">Mínimo para aprovação: <strong style="color:var(--yw)">57,5 pts</strong> · Não zerar nenhuma disciplina</div>
+    <div id="history"></div>
+  </div>
+
+  <!-- TAB: QUIZ -->
+  <div id="tab-quiz" style="display:none">
+    <div id="quiz-area"></div>
+  </div>
+
+  <!-- TAB: BANCO -->
+  <div id="tab-banco" style="display:none">
+
+    <!-- IMPORTADOR -->
+    <div class="import-card">
+      <div class="import-header" onclick="toggleImport()">
+        <span class="import-header-label">
+          <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg>
+          Importar questões via texto
+        </span>
+        <button class="import-toggle-btn" id="import-chevron">&#9660; Expandir</button>
+      </div>
+      <div class="import-body" id="import-body" style="display:none">
+        <div class="import-hint">
+          Cole o texto de uma ou mais questões. O importador reconhece os formatos mais comuns de concurso:<br>
+          <code>A) texto</code> &nbsp;ou&nbsp; <code>(A) texto</code> &nbsp;+&nbsp; <code>Gabarito: B</code> &nbsp;ou&nbsp; <code>Resposta: B</code>
+        </div>
+        <textarea class="import-textarea" id="import-text" placeholder="QUESTÃO 10 (FGV, 2023)&#10;O padrão Singleton garante que:&#10;A) Exatamente uma instância da classe existe&#10;B) A classe é imutável&#10;C) O objeto é compartilhado&#10;D) Só métodos estáticos existem&#10;E) Criação é lazy por padrão&#10;Gabarito: A&#10;Comentário: O Singleton controla a instanciação..."></textarea>
+        <div class="import-actions">
+          <button class="import-btn" onclick="parseImport()">Analisar Questão</button>
+          <button class="import-btn secondary" onclick="clearImport()">Limpar</button>
+        </div>
+        <div id="import-preview" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="card banco-form-card">
+      <div class="banco-header">
+        <span class="sec-title" style="margin:0;padding:0;border:none">Adicionar questão</span>
+        <span class="banco-stats" id="banco-stats"></span>
+      </div>
+      <div class="banco-grid">
+        <div class="field">
+          <label class="form-label">Disciplina</label>
+          <select class="form-select" id="q-new-disc">
+            <option>Específico</option><option>Português</option><option>Inglês</option>
+            <option>Lógica</option><option>Legislação</option><option>Atualidades</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="form-label">Fonte (ex: FGV 2023)</label>
+          <input class="form-input" type="text" id="q-new-fonte" placeholder="opcional"/>
+        </div>
+        <div class="field full">
+          <label class="form-label">Enunciado *</label>
+          <textarea class="form-textarea" id="q-new-enunciado" rows="3" placeholder="Texto completo da questão..."></textarea>
+        </div>
+        <div class="field"><label class="form-label">A) *</label><input class="form-input" type="text" id="q-new-a" placeholder="Alternativa A"/></div>
+        <div class="field"><label class="form-label">B) *</label><input class="form-input" type="text" id="q-new-b" placeholder="Alternativa B"/></div>
+        <div class="field"><label class="form-label">C)</label><input class="form-input" type="text" id="q-new-c" placeholder="Alternativa C"/></div>
+        <div class="field"><label class="form-label">D)</label><input class="form-input" type="text" id="q-new-d" placeholder="Alternativa D"/></div>
+        <div class="field"><label class="form-label">E)</label><input class="form-input" type="text" id="q-new-e" placeholder="Alternativa E"/></div>
+        <div class="field">
+          <label class="form-label">Gabarito *</label>
+          <select class="form-select" id="q-new-gabarito">
+            <option value="a">A</option><option value="b">B</option><option value="c">C</option>
+            <option value="d">D</option><option value="e">E</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label class="form-label">Explicação / Comentário (opcional)</label>
+          <textarea class="form-textarea" id="q-new-explicacao" rows="2" placeholder="Por que essa alternativa está correta..."></textarea>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="addQuestion()">+ Adicionar Questão</button>
+    </div>
+    <div id="banco-list"></div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const BASE = '';
+const DISCIPLINES=['Específico','Português','Inglês','Lógica','Legislação','Atualidades'];
+const DISC=[
+  {id:'f-esp',label:'Específico',max:30,mult:2.5,key:'especifico'},
+  {id:'f-por',label:'Português',max:12,mult:1,key:'portugues'},
+  {id:'f-ing',label:'Inglês',max:12,mult:1,key:'ingles'},
+  {id:'f-log',label:'Lógica',max:5,mult:1,key:'logica'},
+  {id:'f-leg',label:'Legislação',max:5,mult:1,key:'legislacao'},
+  {id:'f-atu',label:'Atualidades',max:6,mult:1,key:'atualidades'},
+];
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function setTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['registrar','quiz','banco'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+  });
+  if(name==='quiz')renderQuizSetup();
+  if(name==='banco'){loadQuestoes();renderBanco();}
+}
+
+// ── Registrar ────────────────────────────────────────────────────────────────
+function vals(){return DISC.map(d=>({...d,v:Math.min(d.max,Math.max(0,parseInt(document.getElementById(d.id).value)||0))}));}
+function calcScore(vs){return vs.reduce((a,v)=>a+v.v*v.mult,0);}
+
+function preview(){
+  const vs=vals();
+  const score=calcScore(vs);
+  const pass=score>=57.5;
+  const el=document.getElementById('pv-score');
+  el.textContent=score.toFixed(1).replace('.',',');
+  el.className='preview-score '+(score===0?'na':pass?'pass':'fail');
+  document.getElementById('pv-bars').innerHTML=vs.map(v=>{
+    const pts=v.v*v.mult,maxpts=v.max*v.mult,pct=maxpts>0?Math.round(pts/maxpts*100):0;
+    return `<div class="pb-row"><span class="pb-name">${v.label}</span><div class="pb-track"><div class="pb-fill" style="width:${pct}%"></div></div><span class="pb-val">${pts%1?pts.toFixed(1):pts}/${maxpts%1?maxpts.toFixed(0):maxpts}</span></div>`;
+  }).join('');
+  const zeros=vs.filter(v=>v.v===0).map(v=>v.label);
+  const zw=document.getElementById('zero-warn');
+  if(zeros.length){zw.style.display='block';zw.innerHTML=ic('alert-triangle')+' Zero em: '+zeros.join(', ')+' → Eliminação automática!';}
+  else zw.style.display='none';
+}
+
+async function submit(){
+  const vs=vals();
+  const date=document.getElementById('f-date').value;
+  if(!date){alert('Informe a data do simulado.');return;}
+  const body={date,notes:document.getElementById('f-notes').value,
+    especifico:vs[0].v,portugues:vs[1].v,ingles:vs[2].v,
+    logica:vs[3].v,legislacao:vs[4].v,atualidades:vs[5].v};
+  await fetch(BASE+'/api/simulados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  DISC.forEach(d=>document.getElementById(d.id).value=0);
+  document.getElementById('f-notes').value='';
+  document.getElementById('f-date').value='';
+  preview();loadHistory();
+}
+
+async function del(id){
+  if(!confirm('Excluir este simulado?'))return;
+  await fetch(BASE+'/api/simulados/'+id,{method:'DELETE'});
+  loadHistory();
+}
+
+async function loadHistory(){
+  const sims=await fetch(BASE+'/api/simulados').then(r=>r.json()).catch(()=>[]);
+  renderHistory(sims);renderEvo(sims);
+}
+
+function renderHistory(sims){
+  const el=document.getElementById('history');
+  if(!sims.length){el.innerHTML='<div class="empty">Nenhum simulado registrado.</div>';return;}
+  el.innerHTML=sims.map(s=>{
+    const score=s.especifico*2.5+s.portugues+s.ingles+s.logica+s.legislacao+s.atualidades;
+    const pass=score>=57.5;
+    const zeros=[['Esp',s.especifico],['Port',s.portugues],['Ingl',s.ingles],['Lóg',s.logica],['Leg',s.legislacao],['Atual',s.atualidades]].filter(([,v])=>v===0).map(([n])=>n);
+    return `<div class="sim-item">
+      <div class="sim-score-badge ${pass?'pass':'fail'}">${score.toFixed(1).replace('.',',')} pts</div>
+      <div class="sim-detail">
+        <div class="sim-date">${s.date} · ${pass?ic('circle-check')+' Aprovado':ic('circle-x')+' Reprovado'}${zeros.length?' · '+ic('alert-triangle')+' Zero: '+zeros.join(',')+' – eliminado!':''}</div>
+        <div class="sim-breakdown">Esp: ${(s.especifico*2.5).toFixed(1)} · Port: ${s.portugues} · Ingl: ${s.ingles} · Lóg: ${s.logica} · Leg: ${s.legislacao} · Atual: ${s.atualidades}</div>
+        ${s.notes?`<div class="sim-notes">"${s.notes}"</div>`:''}
+      </div>
+      <button class="btn-danger" onclick="del('${s.id}')">${ic('trash-2',12)} Excluir</button>
+    </div>`;
+  }).join('');
+}
+
+function renderEvo(sims){
+  const el=document.getElementById('evo');
+  if(!sims.length){el.innerHTML='<div class="empty">Nenhum simulado registrado ainda.</div>';return;}
+  const sorted=[...sims].reverse();
+  const maxS=115;
+  el.innerHTML=`
+    <div style="font-size:.72rem;color:var(--mu);margin-bottom:.3rem">Pontuação × simulado (mín 57,5 pts)</div>
+    <div class="min-line"><div class="min-label">57,5 mín</div></div>
+    <div class="evo-bars">${sorted.map((s,i)=>{
+      const sc=s.especifico*2.5+s.portugues+s.ingles+s.logica+s.legislacao+s.atualidades;
+      const pass=sc>=57.5;
+      return `<div class="evo-bar ${pass?'pass':'fail'}" style="height:${Math.round((sc/maxS)*80)}px" data-tip="#${i+1} · ${s.date}: ${sc.toFixed(1)}pts"></div>`;
+    }).join('')}</div>
+    <div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:.68rem;color:var(--mu)"><span>#1</span><span>#${sorted.length}</span></div>`;
+}
+
+// ── Quiz ─────────────────────────────────────────────────────────────────────
+let allQuestoes=[], quizQ=[], quizIdx=0, quizAns=[], quizDisc='', quizMode=false;
+
+function renderQuizSetup(){
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="card quiz-setup">
+      <div class="setup-row">
+        <div class="setup-field">
+          <label>Disciplina</label>
+          <select id="q-disc" onchange="updateBankSummary()">
+            <option value="Todas">Todas as disciplinas</option>
+            ${DISCIPLINES.map(d=>`<option value="${d}">${d}</option>`).join('')}
+          </select>
+        </div>
+        <div class="setup-field">
+          <label>Quantidade</label>
+          <select id="q-qty">
+            <option value="5">5 questões</option>
+            <option value="10" selected>10 questões</option>
+            <option value="15">15 questões</option>
+            <option value="20">20 questões</option>
+            <option value="9999">Todas disponíveis</option>
+          </select>
+        </div>
+      </div>
+      <div class="quiz-bank-summary" id="quiz-bank-summary">${ic('book')} Carregando banco...</div>
+      <button class="btn btn-primary" onclick="startQuiz()">${ic('zap')} Começar Quiz</button>
+    </div>`;
+  updateBankSummary();
+}
+
+function updateBankSummary(){
+  const disc=document.getElementById('q-disc')?.value||'Todas';
+  const count=disc==='Todas'?allQuestoes.length:allQuestoes.filter(q=>q.disciplina===disc).length;
+  const el=document.getElementById('quiz-bank-summary');
+  if(!el)return;
+  el.innerHTML=count>0
+    ?`${ic('book')} ${count} questão${count!==1?'es':''} disponíve${count!==1?'is':'l'} · Adicione mais no ${ic('book')} Banco de Questões`
+    :`${ic('alert-triangle')} Nenhuma questão ainda — vá em ${ic('book')} Banco de Questões e adicione.`;
+}
+
+function startQuiz(){
+  const disc=document.getElementById('q-disc').value;
+  const qty=parseInt(document.getElementById('q-qty').value)||10;
+  const pool=disc==='Todas'?[...allQuestoes]:allQuestoes.filter(q=>q.disciplina===disc);
+  if(!pool.length){alert('Nenhuma questão disponível. Adicione no Banco de Questões.');return;}
+  quizQ=[...pool].sort(()=>Math.random()-.5).slice(0,qty);
+  quizIdx=0;quizAns=[];quizDisc=disc;quizMode=true;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  const q=quizQ[quizIdx];
+  const alts=['a','b','c','d','e'].filter(k=>q[k]&&q[k].trim());
+  const pct=Math.round(quizIdx/quizQ.length*100);
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="quiz-prog-wrap">
+      <div class="quiz-prog-text"><span>Questão ${quizIdx+1} de ${quizQ.length}</span><span>${pct}%</span></div>
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="card quiz-card">
+      <div class="quiz-disc-tag">${q.disciplina}</div>
+      ${q.fonte?`<div class="quiz-fonte">Fonte: ${esc(q.fonte)}</div>`:''}
+      <div class="quiz-enunciado">${esc(q.enunciado)}</div>
+      <div class="quiz-alts" id="quiz-alts">
+        ${alts.map(k=>`<label class="quiz-alt" id="qalt-${k}">
+          <input type="radio" name="qr" value="${k}">
+          <span class="alt-letter">${k.toUpperCase()}</span>
+          <span>${esc(q[k])}</span>
+        </label>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-fb" style="display:none"></div>
+      ${q.explicacao?`<div class="quiz-explicacao" id="quiz-exp" style="display:none">${esc(q.explicacao)}</div>`:''}
+      <div class="quiz-actions">
+        <button class="quiz-btn-secondary" onclick="giveUpQuiz()">Desistir</button>
+        <button class="quiz-btn-primary" id="quiz-confirm" onclick="confirmAnswer()">${ic('arrow-right')} Confirmar</button>
+        <button class="quiz-btn-primary" id="quiz-next" onclick="nextQuestion()" style="display:none">${ic('arrow-right')} Próxima</button>
+      </div>
+    </div>`;
+}
+
+function confirmAnswer(){
+  const sel=document.querySelector('input[name="qr"]:checked');
+  if(!sel){alert('Selecione uma alternativa.');return;}
+  const chosen=sel.value, q=quizQ[quizIdx];
+  const correct=q.gabarito.toLowerCase()===chosen.toLowerCase();
+  quizAns.push({q,chosen,correct});
+  document.querySelectorAll('.quiz-alt').forEach(el=>el.classList.add('disabled'));
+  document.getElementById('qalt-'+chosen)?.classList.add(correct?'correct':'wrong');
+  if(!correct)document.getElementById('qalt-'+q.gabarito.toLowerCase())?.classList.add('correct');
+  const fb=document.getElementById('quiz-fb');
+  fb.style.display='flex';
+  fb.className='quiz-feedback '+(correct?'correct':'wrong');
+  fb.innerHTML=correct?`${ic('circle-check')} Correto!`:`${ic('circle-x')} Errado! Resposta: <strong style="margin-left:.3rem">${q.gabarito.toUpperCase()}</strong>`;
+  const exp=document.getElementById('quiz-exp');if(exp)exp.style.display='block';
+  document.getElementById('quiz-confirm').style.display='none';
+  document.getElementById('quiz-next').style.display='inline-flex';
+}
+
+function nextQuestion(){
+  quizIdx++;
+  if(quizIdx>=quizQ.length)finishQuiz();else renderQuizQuestion();
+}
+
+function finishQuiz(){
+  const total=quizQ.length, acertos=quizAns.filter(a=>a.correct).length;
+  const pct=Math.round(acertos/total*100);
+  const pass=pct>=60;
+  const today=new Date().toISOString().split('T')[0];
+  fetch(BASE+'/api/quiz-results',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({date:today,disciplina:quizDisc||'Todas',total,acertos,erros:quizAns.filter(a=>!a.correct).map(a=>a.q.id)})}).catch(()=>{});
+  const byDisc={};
+  quizAns.forEach(a=>{if(!byDisc[a.q.disciplina])byDisc[a.q.disciplina]={t:0,c:0};byDisc[a.q.disciplina].t++;if(a.correct)byDisc[a.q.disciplina].c++;});
+  const errados=quizAns.filter(a=>!a.correct);
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="card quiz-result">
+      <div class="result-score ${pass?'pass':'fail'}">${acertos}/${total}</div>
+      <div class="result-pct">${pct}% de acerto</div>
+      <div class="result-bar"><div class="result-bar-fill ${pass?'pass':'fail'}" style="width:${pct}%"></div></div>
+      ${Object.keys(byDisc).length>1?`
+      <div class="result-breakdown">
+        <div class="result-section-title">Por disciplina</div>
+        ${Object.entries(byDisc).map(([disc,r])=>`
+          <div class="result-disc-row">
+            <span class="result-disc-name">${disc}</span>
+            <div class="result-disc-bar-wrap"><div class="result-disc-bar-fill" style="width:${Math.round(r.c/r.t*100)}%"></div></div>
+            <span class="result-disc-pct">${r.c}/${r.t}</span>
+          </div>`).join('')}
+      </div>`:''}
+      ${errados.length?`
+      <div class="result-errors">
+        <div class="result-section-title">Questões erradas (${errados.length})</div>
+        ${errados.map((a,i)=>`
+          <div class="result-error-item">
+            <div class="result-err-q">${i+1}. ${esc(a.q.enunciado.slice(0,130))}${a.q.enunciado.length>130?'…':''}</div>
+            <div class="result-err-detail">
+              <span class="wrong-text">Sua resposta: ${a.chosen.toUpperCase()} – ${esc(a.q[a.chosen]||'')}</span><br>
+              <span class="correct-text">Correta: ${a.q.gabarito.toUpperCase()} – ${esc(a.q[a.q.gabarito.toLowerCase()]||'')}</span>
+              ${a.q.explicacao?`<div class="result-err-exp">${esc(a.q.explicacao)}</div>`:''}
+            </div>
+          </div>`).join('')}
+      </div>`:`<p style="color:var(--gn);font-size:.88rem;padding:.4rem 0">Parabéns! Nenhum erro!</p>`}
+      <div class="result-actions">
+        <button class="btn btn-primary" onclick="renderQuizSetup()">Novo Quiz</button>
+      </div>
+    </div>`;
+  quizMode=false;
+}
+
+function giveUpQuiz(){if(!confirm('Desistir do quiz?'))return;quizMode=false;renderQuizSetup();}
+
+// ── Banco ────────────────────────────────────────────────────────────────────
+async function loadQuestoes(){
+  const data=await fetch(BASE+'/api/questoes').then(r=>r.json()).catch(()=>[]);
+  allQuestoes=data;renderBanco();updateBankSummary();
+}
+
+function renderBanco(){
+  const el=document.getElementById('banco-list');if(!el)return;
+  const bs=document.getElementById('banco-stats');
+  if(bs)bs.textContent=`${allQuestoes.length} questão${allQuestoes.length!==1?'es':''} no banco`;
+  if(!allQuestoes.length){el.innerHTML='<div class="empty">Nenhuma questão ainda. Adicione acima.</div>';return;}
+  const byDisc={};
+  allQuestoes.forEach(q=>{if(!byDisc[q.disciplina])byDisc[q.disciplina]=[];byDisc[q.disciplina].push(q);});
+  el.innerHTML=Object.entries(byDisc).map(([disc,qs])=>`
+    <div class="banco-disc-group">
+      <div class="banco-disc-header">${disc} (${qs.length})</div>
+      ${qs.map(q=>`
+        <div class="banco-q-item">
+          <div class="banco-q-info">
+            <div class="banco-q-text">${esc(q.enunciado.slice(0,120))}${q.enunciado.length>120?'…':''}</div>
+            <div class="banco-q-meta">${q.fonte?'Fonte: '+esc(q.fonte)+' · ':''}Gabarito: ${q.gabarito.toUpperCase()}</div>
+          </div>
+          <button class="btn-danger" onclick="deleteQ('${q.id}')">${ic('trash-2',12)}</button>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+async function addQuestion(){
+  const disc=document.getElementById('q-new-disc').value;
+  const enunciado=document.getElementById('q-new-enunciado').value.trim();
+  const a=document.getElementById('q-new-a').value.trim();
+  const b=document.getElementById('q-new-b').value.trim();
+  if(!enunciado||!a||!b){alert('Preencha o enunciado e as alternativas A e B.');return;}
+  const body={
+    disciplina:disc,enunciado,a,b,
+    c:document.getElementById('q-new-c').value.trim(),
+    d:document.getElementById('q-new-d').value.trim(),
+    e:document.getElementById('q-new-e').value.trim(),
+    gabarito:document.getElementById('q-new-gabarito').value,
+    fonte:document.getElementById('q-new-fonte').value.trim(),
+    explicacao:document.getElementById('q-new-explicacao').value.trim()
+  };
+  await fetch(BASE+'/api/questoes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  ['enunciado','a','b','c','d','e','fonte','explicacao'].forEach(f=>{const el=document.getElementById('q-new-'+f);if(el)el.value='';});
+  await loadQuestoes();
+}
+
+async function deleteQ(id){
+  if(!confirm('Excluir esta questão?'))return;
+  await fetch(BASE+'/api/questoes/'+id,{method:'DELETE'});
+  await loadQuestoes();
+}
+
+// ── Importador ───────────────────────────────────────────────────────────────
+function toggleImport(){
+  const body=document.getElementById('import-body');
+  const btn=document.getElementById('import-chevron');
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  btn.innerHTML=open?'&#9650; Fechar':'&#9660; Expandir';
+}
+
+function clearImport(){
+  document.getElementById('import-text').value='';
+  document.getElementById('import-preview').style.display='none';
+}
+
+function parseImport(){
+  const raw=document.getElementById('import-text').value.trim();
+  if(!raw){alert('Cole o texto da questão primeiro.');return;}
+  const q=parseQuestaoText(raw);
+  if(!q.enunciado && !q.a){alert('Não foi possível identificar a estrutura da questão. Verifique o formato.');return;}
+  renderImportPreview(q);
+}
+
+function parseQuestaoText(text){
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').map(l=>l.trim());
+  const result={disciplina:'Específico',enunciado:'',a:'',b:'',c:'',d:'',e:'',gabarito:'a',fonte:'',explicacao:''};
+  const enuncLines=[];
+  let inAlts=false, inExp=false, expLines=[];
+  for(const line of lines){
+    if(!line)continue;
+    const gabM=line.match(/^(?:gabarito|resposta|alternativa correta)[:\s\-]+\(?([A-Ea-e])\)?/i);
+    if(gabM){result.gabarito=gabM[1].toLowerCase();inExp=false;continue;}
+    const expM=line.match(/^(?:coment[aá]rio|explica[cç][aã]o|justificativa)[:\s]*(.*)/i);
+    if(expM){inExp=true;inAlts=false;if(expM[1])expLines.push(expM[1]);continue;}
+    if(inExp){expLines.push(line);continue;}
+    const srcM=line.match(/^quest[aã]o\s*\d+\s*[–\-]?\s*(.+)/i)||line.match(/^\(([A-Z]{2,}[^)]*\d{4}[^)]*)\)/);
+    if(srcM){result.fonte=srcM[1]||srcM[0];continue;}
+    const fgvM=line.match(/\bFGV\b.*\d{4}|\bCEBRASPE\b.*\d{4}|\bCESPE\b.*\d{4}/i);
+    if(fgvM&&!inAlts){result.fonte=result.fonte||fgvM[0];continue;}
+    const altM=line.match(/^[\(\[]?([A-Ea-e])[\)\]\.\s]\s*(.+)/);
+    if(altM){result[altM[1].toLowerCase()]=altM[2].trim();inAlts=true;continue;}
+    if(!inAlts)enuncLines.push(line);
+  }
+  result.enunciado=enuncLines.join(' ').replace(/\s+/g,' ').trim();
+  result.explicacao=expLines.join(' ').replace(/\s+/g,' ').trim();
+  return result;
+}
+
+function renderImportPreview(q){
+  const DISC_OPTS=DISCIPLINES.map(d=>`<option value="${d}"${q.disciplina===d?' selected':''}>${d}</option>`).join('');
+  const GAB_OPTS=['a','b','c','d','e'].map(k=>`<option value="${k}"${q.gabarito===k?' selected':''}>${k.toUpperCase()}</option>`).join('');
+  const el=document.getElementById('import-preview');
+  el.style.display='block';
+  el.innerHTML=`
+    <div class="import-preview-title">Questão identificada — revise e confirme</div>
+    <div class="banco-grid">
+      <div class="field"><label class="form-label">Disciplina</label><select class="form-select" id="ip-disc">${DISC_OPTS}</select></div>
+      <div class="field"><label class="form-label">Fonte</label><input class="form-input" type="text" id="ip-fonte" value="${esc(q.fonte)}"/></div>
+      <div class="field full"><label class="form-label">Enunciado</label><textarea class="form-textarea" id="ip-enunciado" rows="3">${esc(q.enunciado)}</textarea></div>
+      <div class="field"><label class="form-label">A)</label><input class="form-input" type="text" id="ip-a" value="${esc(q.a)}"/></div>
+      <div class="field"><label class="form-label">B)</label><input class="form-input" type="text" id="ip-b" value="${esc(q.b)}"/></div>
+      <div class="field"><label class="form-label">C)</label><input class="form-input" type="text" id="ip-c" value="${esc(q.c)}"/></div>
+      <div class="field"><label class="form-label">D)</label><input class="form-input" type="text" id="ip-d" value="${esc(q.d)}"/></div>
+      <div class="field"><label class="form-label">E)</label><input class="form-input" type="text" id="ip-e" value="${esc(q.e)}"/></div>
+      <div class="field"><label class="form-label">Gabarito</label><select class="form-select" id="ip-gabarito">${GAB_OPTS}</select></div>
+      <div class="field full"><label class="form-label">Explicação (opcional)</label><textarea class="form-textarea" id="ip-explicacao" rows="2">${esc(q.explicacao)}</textarea></div>
+    </div>
+    <div class="import-actions">
+      <button class="import-btn" onclick="confirmImport()">Adicionar ao Banco</button>
+      <button class="import-btn secondary" onclick="document.getElementById('import-preview').style.display='none'">Cancelar</button>
+    </div>`;
+}
+
+async function confirmImport(){
+  const body={
+    disciplina:document.getElementById('ip-disc').value,
+    enunciado:document.getElementById('ip-enunciado').value.trim(),
+    a:document.getElementById('ip-a').value.trim(),
+    b:document.getElementById('ip-b').value.trim(),
+    c:document.getElementById('ip-c').value.trim(),
+    d:document.getElementById('ip-d').value.trim(),
+    e:document.getElementById('ip-e').value.trim(),
+    gabarito:document.getElementById('ip-gabarito').value,
+    fonte:document.getElementById('ip-fonte').value.trim(),
+    explicacao:document.getElementById('ip-explicacao').value.trim()
+  };
+  if(!body.enunciado||!body.a||!body.b){alert('Preencha pelo menos o enunciado e as alternativas A e B.');return;}
+  await fetch(BASE+'/api/questoes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  document.getElementById('import-preview').style.display='none';
+  document.getElementById('import-text').value='';
+  await loadQuestoes();
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.getElementById('main-tabs').innerHTML=
+  `<button class="tab-btn on" onclick="setTab('registrar',this)">${ic('pencil')} Registrar Score</button>`+
+  `<button class="tab-btn" onclick="setTab('quiz',this)">${ic('zap')} Fazer Quiz</button>`+
+  `<button class="tab-btn" onclick="setTab('banco',this)">${ic('book')} Banco de Questões</button>`;
+document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+preview();loadHistory();loadQuestoes();
+</script>
+{% endblock %}
