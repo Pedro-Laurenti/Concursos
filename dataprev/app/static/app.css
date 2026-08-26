@@ -914,18 +914,20 @@ body {
 .study-drawer.open { right: 0; }
 .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 299; }
 .drawer-overlay.open { display: block; }
-.drawer-header { display: flex; align-items: stretch; padding: 0 .6rem 0 0; border-bottom: 1px solid var(--br); flex-shrink: 0; }
-.drawer-tabs { display: flex; flex: 1; }
-.drawer-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--mu); cursor: pointer; font-size: .72rem; font-weight: 600; font-family: inherit; padding: .7rem .8rem .58rem; letter-spacing: .03em; display: flex; align-items: center; gap: .28rem; transition: color .15s, border-color .15s; white-space: nowrap; }
-.drawer-tab.active { color: var(--ac); border-bottom-color: var(--ac); }
-.drawer-tab:hover:not(.active) { color: var(--tx); }
-.drawer-close { background: none; border: none; cursor: pointer; color: var(--mu); padding: .2rem; border-radius: 5px; display: flex; align-items: center; transition: color .15s; }
+.drawer-header { display: flex; align-items: center; padding: .75rem 1rem .75rem 1.15rem; border-bottom: 1px solid var(--br); flex-shrink: 0; gap: .5rem; }
+.drawer-title { font-size: .8rem; font-weight: 700; color: var(--tx); flex: 1; letter-spacing: .01em; }
+.drawer-close { background: none; border: none; cursor: pointer; color: var(--mu); padding: .25rem; border-radius: 5px; display: flex; align-items: center; transition: color .15s; margin-left: auto; }
 .drawer-close:hover { color: var(--tx); }
 .drawer-body { flex: 1; overflow-y: auto; padding: .9rem 1.15rem; display: flex; flex-direction: column; gap: .9rem; }
 .drawer-section-label { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--ac); margin-bottom: .6rem; padding-bottom: .35rem; border-bottom: 1px solid var(--br); }
 
-/* Pomodoro */
-.pomo-display { font-size: 2.1rem; font-weight: 700; font-family: monospace; text-align: center; color: var(--tx); margin: .25rem 0 .5rem; letter-spacing: .06em; }
+/* Pomodoro — anel SVG */
+.pomo-ring-wrap { position: relative; width: 148px; height: 148px; margin: .25rem auto .5rem; }
+.pomo-ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.pomo-track { fill: none; stroke: var(--br); stroke-width: 8; }
+.pomo-prog { fill: none; stroke: var(--gn); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .92s linear, stroke .35s; }
+.pomo-ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.pomo-display { font-size: 1.55rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--tx); line-height: 1; transition: color .3s; }
 .pomo-controls { display: flex; gap: .4rem; justify-content: center; margin-bottom: .4rem; }
 .pomo-presets { display: flex; gap: .25rem; justify-content: center; flex-wrap: wrap; }
 .pomo-preset { background: var(--sf2); border: 1px solid var(--br); color: var(--mu); border-radius: 5px; font-size: .68rem; padding: .15rem .45rem; cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }
@@ -933,9 +935,12 @@ body {
 .pomo-total { text-align: center; font-size: .68rem; color: var(--gn); margin-top: .35rem; min-height: 1em; }
 
 /* Anotações */
-.notes-textarea { width: 100%; box-sizing: border-box; background: var(--sf2); border: 1px solid var(--br); border-radius: 6px; color: var(--tx); font-size: .8rem; padding: .45rem .65rem; resize: vertical; min-height: 120px; font-family: inherit; outline: none; line-height: 1.5; }
+.notes-wrap { display: flex; flex-direction: column; }
+.notes-textarea { width: 100%; box-sizing: border-box; background: var(--sf2); border: 1px solid var(--br); border-radius: 8px 8px 0 0; color: var(--tx); font-size: .8rem; padding: .6rem .75rem; resize: vertical; min-height: 130px; font-family: inherit; outline: none; line-height: 1.55; transition: border-color .15s; }
 .notes-textarea:focus { border-color: var(--ac); }
-.notes-status { font-size: .65rem; color: var(--gn); min-height: 1em; text-align: right; margin-top: .2rem; }
+.notes-footer { display: flex; justify-content: space-between; align-items: center; background: var(--sf2); border: 1px solid var(--br); border-top: none; border-radius: 0 0 8px 8px; padding: .22rem .65rem; }
+.notes-status { font-size: .68rem; color: var(--gn); font-weight: 500; }
+.notes-count { font-size: .65rem; color: var(--mu); }
 
 /* Recursos */
 .rec-group { margin-bottom: .6rem; }
@@ -1032,3 +1037,53 @@ ol.et-list li::before { content: counter(et-cnt) '.'; font-size: .7rem; color: v
   .et-wrap { padding: 1rem .75rem 3rem; }
   .pdf-embed { height: 55vh; }
 }
+
+/* ── Study stats bar (checklist) ────────────────────────────────────── */
+.study-stats-bar { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: .4rem 0 .85rem; flex-wrap: wrap; }
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 52px; }
+.stat-val { font-size: .95rem; font-weight: 700; color: var(--tx); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat-today { color: var(--gn); }
+.stat-lbl { font-size: .58rem; text-transform: uppercase; letter-spacing: .07em; color: var(--mu); white-space: nowrap; }
+.stat-sep { width: 1px; height: 28px; background: var(--br); flex-shrink: 0; }
+.wk-time { font-size: .7rem; font-weight: 600; color: var(--gn); background: rgba(52,211,153,.12); padding: .1rem .45rem; border-radius: 10px; margin-left: .55rem; vertical-align: middle; }
+
+/* ── Modal de Questões ────────────────────────────────────────────────── */
+.q-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 400; backdrop-filter: blur(2px); }
+.q-modal-overlay.open { display: block; }
+.q-modal {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -48%);
+  background: var(--sf); border-radius: 14px;
+  width: min(700px, 95vw); max-height: 90vh;
+  display: flex; flex-direction: column;
+  z-index: 401; box-shadow: 0 8px 40px rgba(0,0,0,.22);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .18s, transform .18s, visibility 0s .18s;
+}
+.q-modal.open {
+  opacity: 1; visibility: visible; pointer-events: all;
+  transform: translate(-50%, -50%);
+  transition: opacity .18s, transform .18s, visibility 0s;
+}
+.q-modal-header {
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  padding: .85rem 1rem .75rem; border-bottom: 1px solid var(--br);
+  flex-shrink: 0;
+}
+.q-modal-body { overflow-y: auto; padding: .85rem 1rem 1.25rem; flex: 1; }
+
+/* ── Pomodoro mode toggle & phase badge ───────────────────────────────── */
+.drawer-section-label { display: flex; align-items: center; justify-content: space-between; }
+.pomo-mode-label { display: flex; align-items: center; gap: .3rem; font-size: .72rem; font-weight: 500; color: var(--mu); cursor: pointer; user-select: none; }
+.pomo-mode-label input[type=checkbox] { accent-color: var(--ac); cursor: pointer; }
+.pomo-phase-badge { display: inline-flex; align-items: center; padding: .22rem .7rem; border-radius: 20px; font-size: .76rem; font-weight: 700; letter-spacing: .02em; margin-bottom: .35rem; }
+.pomo-phase-work { background: rgba(52,211,153,.15); color: #059669; }
+.pomo-phase-break-short { background: rgba(33,150,243,.15); color: #1565c0; }
+.pomo-phase-break-long { background: rgba(156,39,176,.15); color: #7b1fa2; }
+
+/* ── PDF dropdown menu ─────────────────────────────────────────────────── */
+.study-q-header { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.q-pdf-wrap { position: relative; margin-left: auto; }
+.q-pdf-menu { position: absolute; right: 0; top: calc(100% + 4px); background: var(--srf, var(--sf)); border: 1px solid var(--bdr, var(--br)); border-radius: 8px; min-width: 210px; z-index: 200; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.14); }
+.q-pdf-menu button { display: block; width: 100%; text-align: left; padding: .55rem .85rem; font-size: .8rem; font-family: inherit; background: none; border: none; cursor: pointer; color: var(--fg, var(--tx)); transition: background .12s; }
+.q-pdf-menu button:hover { background: var(--hover, rgba(0,0,0,.06)); }

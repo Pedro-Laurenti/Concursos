@@ -18,6 +18,7 @@
 
   <div class="today-card" id="tc"></div>
   <div class="prog"><div class="track"><div class="fill" id="fill" style="width:0%"></div></div><div class="prog-lbl" id="plbl">0/0 dias</div></div>
+  <div class="study-stats-bar" id="study-stats"></div>
   <div class="offline-warn" id="warn">
     <svg class="lci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/></svg>
     Servidor offline – dados salvos temporariamente no navegador.
@@ -192,8 +193,28 @@ function render() {
   if (activeWk===null) { const i=PLAN.findIndex(p=>p.d>=today); activeWk = i>=0?Math.floor(i/7)+1:nw; }
   document.getElementById('wn').innerHTML = Array.from({length:nw},(_,i)=>`<button class="wk-btn${i+1===activeWk?' on':''}" onclick="setWk(${i+1})">S${i+1}</button>`).join('');
 
+  // Study stats
+  const totalMins = Object.values(minutesData).reduce((a,b)=>a+b,0);
+  const studiedDays = Object.keys(minutesData).filter(d=>minutesData[d]>0).length;
   const si=(activeWk-1)*7, wp=PLAN.slice(si,si+7);
-  document.getElementById('dc').innerHTML = `<div class="wk-title">${PHASE_LABELS[wp[0].ph]} · ${fmtDate(wp[0].d)} → ${fmtDate(wp[wp.length-1].d)}</div>` +
+  const weekMins = wp.reduce((s,p)=>s+(minutesData[p.d]||0),0);
+  const todayMins = timerState.date===today
+    ? Math.floor((timerState.elapsed+(Date.now()-timerState.startedAt))/60000)
+    : (minutesData[today]||0);
+  const sEl = document.getElementById('study-stats');
+  if (sEl) {
+    const sep = '<div class="stat-sep"></div>';
+    sEl.innerHTML = totalMins > 0 ? `
+      <div class="stat-item"><span class="stat-val">${fmtMinutes(totalMins)||'0'}</span><span class="stat-lbl">total estudado</span></div>
+      ${sep}
+      <div class="stat-item"><span class="stat-val">${studiedDays}</span><span class="stat-lbl">dias com estudo</span></div>
+      ${sep}
+      <div class="stat-item"><span class="stat-val">${fmtMinutes(weekMins)||'—'}</span><span class="stat-lbl">semana ${activeWk}</span></div>
+      ${todayMins>0?`${sep}<div class="stat-item"><span class="stat-val stat-today">${fmtMinutes(todayMins)}</span><span class="stat-lbl">hoje</span></div>`:''}
+    ` : '';
+  }
+
+  document.getElementById('dc').innerHTML = `<div class="wk-title">${PHASE_LABELS[wp[0].ph]} · ${fmtDate(wp[0].d)} → ${fmtDate(wp[wp.length-1].d)}${weekMins>0?`<span class="wk-time">${fmtMinutes(weekMins)}</span>`:''}</div>` +
     wp.map(p=>{
       const isDone=doneSet.has(p.d), isTd=p.d===today, hasNote=!!(notesData[p.d]&&notesData[p.d].trim());
       const isTimingThisDay=timerState.date===p.d, savedMins=minutesData[p.d]||0;

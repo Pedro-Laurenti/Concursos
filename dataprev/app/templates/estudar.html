@@ -26,22 +26,36 @@
   </div>
   {% endif %}
 
-  <section class="study-q-section" id="study-q-section" style="display:none">
-    <div class="study-q-header">
-      <span class="study-q-title">Questões FGV</span>
-      <span class="study-q-score" id="q-score"></span>
-    </div>
-    <div id="q-nav-dots" class="q-nav-dots"></div>
-    <div id="q-card-area"></div>
-    <div class="q-controls" id="q-controls"></div>
-  </section>
-
   <nav class="study-nav">
     <button class="btn-ghost" id="btn-prev" onclick="navStudar(-1)">&#8592; Anterior</button>
     <span class="study-pos" id="e-pos"></span>
     <button class="btn-ghost" id="btn-next" onclick="navStudar(1)">Pr&#243;ximo &#8594;</button>
   </nav>
 
+</div>
+
+<!-- Modal de Questões -->
+<div class="q-modal-overlay" id="q-modal-overlay" onclick="closeQModal()"></div>
+<div class="q-modal" id="q-modal" role="dialog" aria-modal="true">
+  <div class="q-modal-header">
+    <span class="study-q-title">Questões FGV</span>
+    <span class="study-q-score" id="q-score"></span>
+    <div class="q-pdf-wrap" id="q-pdf-wrap">
+      <button class="btn-ghost btn-sm" onclick="togglePdfMenu()" title="Gerar PDF das questões">&#8595; PDF</button>
+      <div class="q-pdf-menu" id="q-pdf-menu" style="display:none">
+        <button onclick="printQuestoes(false);togglePdfMenu()">Treino (sem gabarito)</button>
+        <button onclick="printQuestoes(true);togglePdfMenu()">Com gabarito e explicações</button>
+      </div>
+    </div>
+    <button class="drawer-close" onclick="closeQModal()" title="Fechar">
+      <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="q-modal-body">
+    <div id="q-nav-dots" class="q-nav-dots"></div>
+    <div id="q-card-area"></div>
+    <div class="q-controls" id="q-controls"></div>
+  </div>
 </div>
 
 <!-- Pílula do Pomodoro -->
@@ -54,14 +68,8 @@
 <div class="sd-wrap" id="sd-wrap">
   <div class="sd-items" id="sd-items">
     <div class="sd-item">
-      <span class="sd-label">Modo leitura</span>
-      <button class="sd-btn" onclick="toggleZen();toggleSD()" title="Modo leitura">
-        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
-    </div>
-    <div class="sd-item">
-      <span class="sd-label">Tela cheia</span>
-      <button class="sd-btn" onclick="toggleFullscreen();toggleSD()" title="Tela cheia">
+      <span class="sd-label">Foco</span>
+      <button class="sd-btn" onclick="toggleFoco();toggleSD()" title="Modo foco (zen + tela cheia)">
         <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
     </div>
@@ -77,6 +85,12 @@
         <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </button>
     </div>
+    <div class="sd-item" id="sd-questoes-item" style="display:none">
+      <span class="sd-label">Questões</span>
+      <button class="sd-btn" onclick="openQModal();toggleSD()" title="Questões do dia">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+    </div>
   </div>
   <button class="sd-main" id="sd-main" onclick="toggleSD()" title="Abrir menu">
     <svg class="lci" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -86,29 +100,32 @@
 <!-- Drawer lateral -->
 <div class="study-drawer" id="study-drawer">
   <div class="drawer-header">
-    <div class="drawer-tabs">
-      <button class="drawer-tab active" id="tab-btn-tools" onclick="switchTab('tools')">
-        <svg class="lci" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Ferramentas
-      </button>
-      <button class="drawer-tab" id="tab-btn-resources" onclick="switchTab('resources')">
-        <svg class="lci" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        Recursos
-      </button>
-    </div>
+    <span class="drawer-title" id="drawer-title">Ferramentas</span>
     <button class="drawer-close" onclick="toggleDrawer()" title="Fechar">
       <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <div class="drawer-body" id="tab-tools">
     <div class="drawer-section">
-      <div class="drawer-section-label">Cronômetro</div>
-      <div class="pomo-display" id="pomo-display">25:00</div>
+      <div class="drawer-section-label">
+        Cronômetro
+        <label class="pomo-mode-label"><input type="checkbox" id="pomo-mode-chk" onchange="togglePomoMode(this.checked)"> Pomodoro</label>
+      </div>
+      <div class="pomo-ring-wrap">
+        <svg class="pomo-ring-svg" viewBox="0 0 120 120">
+          <circle class="pomo-track" cx="60" cy="60" r="50"/>
+          <circle class="pomo-prog" cx="60" cy="60" r="50" id="pomo-prog" stroke-dasharray="314.16" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomo-ring-center">
+          <div class="pomo-display" id="pomo-display">25:00</div>
+          <div class="pomo-phase-badge" id="pomo-phase-badge" style="display:none"></div>
+        </div>
+      </div>
       <div class="pomo-controls">
         <button class="btn btn-primary btn-sm" id="pomo-btn" onclick="pomoToggle()">Iniciar</button>
         <button class="btn-ghost btn-sm" onclick="pomoReset()">Reset</button>
       </div>
-      <div class="pomo-presets">
+      <div class="pomo-presets" id="pomo-presets">
         <button class="pomo-preset" onclick="pomoSet(25)">25 min</button>
         <button class="pomo-preset" onclick="pomoSet(50)">50 min</button>
         <button class="pomo-preset" onclick="pomoSet(90)">90 min</button>
@@ -116,9 +133,14 @@
       <div class="pomo-total" id="pomo-total"></div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-label">Anotações do dia</div>
-      <textarea id="notes-textarea" class="notes-textarea" placeholder="Suas anotações aqui..."></textarea>
-      <div class="notes-status" id="notes-status"></div>
+      <div class="drawer-section-label">Anotações</div>
+      <div class="notes-wrap">
+        <textarea id="notes-textarea" class="notes-textarea" placeholder="Escreva suas notas aqui..." maxlength="2000"></textarea>
+        <div class="notes-footer">
+          <span class="notes-status" id="notes-status"></span>
+          <span class="notes-count" id="notes-count">0 / 2000</span>
+        </div>
+      </div>
     </div>
   </div>
   <div class="drawer-body" id="tab-resources" style="display:none">
@@ -158,6 +180,15 @@ let questoesData = [];
 let currentQ    = 0;
 let qAnswered   = {};
 let qScore      = { total: 0, acertos: 0 };
+const POMO_PHASES = {
+  work:        { label: 'Trabalho',    secs: 25*60, color: 'var(--gn)' },
+  break_short: { label: 'Pausa curta', secs:  5*60, color: '#2196F3'   },
+  break_long:  { label: 'Pausa longa', secs: 15*60, color: '#9C27B0'   },
+};
+const POMO_CYCLES = 4;
+let pomoMode     = 'free';
+let pomoPhaseKey = 'work';
+let pomoCycle    = 1;
 
 // ── Barra de progresso ────────────────────────────────────────────────────
 function initProgress() {
@@ -212,7 +243,11 @@ async function loadNotes() {
   const row = data.find(r => r.date === DATE);
   if (!row) return;
   const ta = document.getElementById('notes-textarea');
-  if (ta && row.notes) ta.value = row.notes;
+  if (ta && row.notes) {
+    ta.value = row.notes;
+    const counter = document.getElementById('notes-count');
+    if (counter) counter.textContent = `${row.notes.length} / 2000`;
+  }
   // Usa o maior entre servidor (minutos completos) e localStorage (mais preciso)
   if (row.minutes > 0) {
     const serverMs = row.minutes * 60000;
@@ -223,10 +258,12 @@ async function loadNotes() {
 document.getElementById('notes-textarea').addEventListener('input', function() {
   clearTimeout(notesTimer);
   const val = this.value;
+  const counter = document.getElementById('notes-count');
+  if (counter) counter.textContent = `${val.length} / 2000`;
   notesTimer = setTimeout(async () => {
     await apiFetch('POST', '/api/checklist/notes', { date: DATE, notes: val });
     const s = document.getElementById('notes-status');
-    if (s) { s.textContent = 'Salvo'; setTimeout(() => s.textContent = '', 2000); }
+    if (s) { s.textContent = '✓ Salvo'; setTimeout(() => s.textContent = '', 2500); }
   }, 800);
 });
 
@@ -238,6 +275,9 @@ function loadTimerState() {
     if (s.remaining != null) pomoState.remaining = s.remaining;
     if (s.total     != null) pomoState.total     = s.total;
     if (s.elapsed   != null) elapsedMs           = s.elapsed;
+    if (s.mode)              pomoMode            = s.mode;
+    if (s.phase)             pomoPhaseKey        = s.phase;
+    if (s.cycle)             pomoCycle           = s.cycle;
   } catch {}
 }
 
@@ -245,7 +285,10 @@ function saveTimerState() {
   localStorage.setItem(TIMER_KEY, JSON.stringify({
     remaining: pomoState.remaining,
     total:     pomoState.total,
-    elapsed:   elapsedMs
+    elapsed:   elapsedMs,
+    mode:      pomoMode,
+    phase:     pomoPhaseKey,
+    cycle:     pomoCycle,
   }));
 }
 
@@ -267,9 +310,60 @@ function playBeep(freq, dur) {
 }
 
 function timerDone() {
-  playBeep(880, 0.6);
-  setTimeout(() => playBeep(1100, 0.6), 700);
-  setTimeout(() => playBeep(880, 1.0), 1400);
+  if (pomoMode === 'pomodoro' && pomoPhaseKey === 'work') {
+    playBeep(880, 0.5);
+    setTimeout(() => playBeep(1100, 0.5), 600);
+    setTimeout(() => playBeep(1320, 0.8), 1200);
+  } else if (pomoMode === 'pomodoro') {
+    playBeep(660, 0.4);
+    setTimeout(() => playBeep(660, 0.4), 500);
+    setTimeout(() => playBeep(880, 0.6), 1000);
+  } else {
+    playBeep(880, 0.6);
+    setTimeout(() => playBeep(1100, 0.6), 700);
+    setTimeout(() => playBeep(880, 1.0), 1400);
+  }
+}
+
+function pomoNextPhase() {
+  if (pomoPhaseKey === 'work') {
+    pomoPhaseKey = pomoCycle >= POMO_CYCLES ? 'break_long' : 'break_short';
+  } else if (pomoPhaseKey === 'break_short') {
+    pomoCycle++;
+    pomoPhaseKey = 'work';
+  } else {
+    pomoCycle    = 1;
+    pomoPhaseKey = 'work';
+  }
+  pomoState.total     = POMO_PHASES[pomoPhaseKey].secs;
+  pomoState.remaining = POMO_PHASES[pomoPhaseKey].secs;
+  saveTimerState();
+  updatePomoDisplay();
+  pomoToggle();
+}
+
+function togglePomoMode(enabled) {
+  pomoMode = enabled ? 'pomodoro' : 'free';
+  clearInterval(pomoState.interval);
+  pomoState.running = false;
+  if (pomoMode === 'pomodoro') {
+    pomoPhaseKey        = 'work';
+    pomoCycle           = 1;
+    pomoState.total     = POMO_PHASES.work.secs;
+    pomoState.remaining = POMO_PHASES.work.secs;
+  }
+  const presets = document.getElementById('pomo-presets');
+  if (presets) presets.style.display = enabled ? 'none' : 'flex';
+  localStorage.removeItem(TIMER_KEY);
+  updatePomoDisplay();
+}
+
+function initPomoUI() {
+  if (pomoMode !== 'pomodoro') return;
+  const chk = document.getElementById('pomo-mode-chk');
+  if (chk) chk.checked = true;
+  const presets = document.getElementById('pomo-presets');
+  if (presets) presets.style.display = 'none';
 }
 
 // ── Pomodoro ──────────────────────────────────────────────────────────────
@@ -278,11 +372,38 @@ function pomoFmt(s) {
 }
 
 function updatePomoDisplay() {
-  const fmt = pomoFmt(pomoState.remaining);
+  const fmt  = pomoFmt(pomoState.remaining);
+  const color = pomoMode === 'pomodoro' ? POMO_PHASES[pomoPhaseKey].color : 'var(--gn)';
+
+  // Text display (inside ring center)
   const disp = document.getElementById('pomo-display');
-  if (disp) disp.textContent = fmt;
+  if (disp) { disp.textContent = fmt; disp.style.color = pomoMode === 'pomodoro' ? color : ''; }
+
+  // SVG ring progress
+  const prog = document.getElementById('pomo-prog');
+  if (prog) {
+    const CIRC = 314.16;
+    const ratio = pomoState.total > 0 ? pomoState.remaining / pomoState.total : 1;
+    prog.style.strokeDashoffset = String(CIRC * (1 - ratio));
+    prog.style.stroke = color;
+  }
+
+  // Phase badge
+  const badge = document.getElementById('pomo-phase-badge');
+  if (badge) {
+    if (pomoMode === 'pomodoro') {
+      const cycleInfo = pomoPhaseKey === 'work' ? ` ${pomoCycle}/${POMO_CYCLES}` : '';
+      badge.textContent = POMO_PHASES[pomoPhaseKey].label + cycleInfo;
+      badge.className   = `pomo-phase-badge pomo-phase-${pomoPhaseKey.replace('_','-')}`;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
   const pillTime = document.getElementById('pomo-pill-time');
   if (pillTime) pillTime.textContent = fmt;
+
   const label = pomoState.running ? 'Pausar'
     : pomoState.remaining < pomoState.total ? 'Continuar' : 'Iniciar';
   const btn  = document.getElementById('pomo-btn');
@@ -324,6 +445,7 @@ function pomoToggle() {
         timerDone();
         saveTimerState();
         updatePomoDisplay();
+        if (pomoMode === 'pomodoro') setTimeout(pomoNextPhase, 3500);
       }
     }, 1000);
     pomoState.running = true;
@@ -334,6 +456,11 @@ function pomoToggle() {
 function pomoReset() {
   clearInterval(pomoState.interval);
   pomoState.running = false;
+  if (pomoMode === 'pomodoro') {
+    pomoPhaseKey        = 'work';
+    pomoCycle           = 1;
+    pomoState.total     = POMO_PHASES.work.secs;
+  }
   pomoState.remaining = pomoState.total;
   localStorage.removeItem(TIMER_KEY);
   updatePomoDisplay();
@@ -373,8 +500,8 @@ function switchTab(tab) {
   const isTools = tab === 'tools';
   document.getElementById('tab-tools').style.display     = isTools ? 'flex' : 'none';
   document.getElementById('tab-resources').style.display = isTools ? 'none' : 'flex';
-  document.getElementById('tab-btn-tools').classList.toggle('active', isTools);
-  document.getElementById('tab-btn-resources').classList.toggle('active', !isTools);
+  const title = document.getElementById('drawer-title');
+  if (title) title.textContent = isTools ? 'Ferramentas' : 'Recursos';
 }
 
 // ── Recursos ──────────────────────────────────────────────────────────────
@@ -406,6 +533,8 @@ function openRecursos() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    const qm = document.getElementById('q-modal');
+    if (qm && qm.classList.contains('open')) { closeQModal(); return; }
     const dr = document.getElementById('study-drawer');
     if (dr && dr.classList.contains('open')) toggleDrawer();
     else {
@@ -415,20 +544,31 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── Zen / Fullscreen ──────────────────────────────────────────────────────
-function toggleZen() {
-  document.body.classList.toggle('zen-mode');
-  const sd = document.getElementById('sd-wrap');
-  if (sd) sd.classList.remove('open');
+// ── Modal de Questões ─────────────────────────────────────────────────────
+function openQModal() {
+  document.getElementById('q-modal').classList.add('open');
+  document.getElementById('q-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
-function toggleFullscreen() {
-  if (!document.fullscreenElement) {
+function closeQModal() {
+  document.getElementById('q-modal').classList.remove('open');
+  document.getElementById('q-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Zen / Fullscreen / Foco ────────────────────────────────────────────────
+function toggleFoco() {
+  const entering = document.body.classList.toggle('zen-mode');
+  if (entering) {
     document.documentElement.requestFullscreen().catch(() => {});
   } else {
-    document.exitFullscreen();
+    if (document.fullscreenElement) document.exitFullscreen();
   }
 }
+
+function toggleZen() { toggleFoco(); }
+function toggleFullscreen() { toggleFoco(); }
 
 // ── Questões — persistência ───────────────────────────────────────────────
 function saveQAnswers() {
@@ -470,7 +610,7 @@ async function loadQuestoes() {
     return true;
   });
   loadQAnswers();
-  document.getElementById('study-q-section').style.display = 'block';
+  document.getElementById('sd-questoes-item').style.display = '';
   renderQuestoes();
 }
 
@@ -566,8 +706,54 @@ function updateQScore() {
   el.className   = 'study-q-score ' + (qScore.acertos / qScore.total >= 0.7 ? 'score-good' : 'score-bad');
 }
 
+// ── PDF de questões ────────────────────────────────────────────────────────
+function togglePdfMenu() {
+  const m = document.getElementById('q-pdf-menu');
+  if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', e => {
+  const menu = document.getElementById('q-pdf-menu');
+  const wrap = document.getElementById('q-pdf-wrap');
+  if (menu && menu.style.display !== 'none' && wrap && !wrap.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+
+function printQuestoes(showGabarito) {
+  if (!questoesData.length) { alert('Nenhuma questão carregada.'); return; }
+  const dayTitle = pe ? (pe.t || pe.d) : DATE;
+  let body = '', gabList = [];
+  questoesData.forEach((q, i) => {
+    const opts    = ['a','b','c','d','e'].filter(l => q[l]);
+    const correct = (q.gabarito || '').toLowerCase().trim();
+    gabList.push({ n: i + 1, g: correct.toUpperCase() });
+    body += `<div class="qb"><p class="qn">${i + 1}.${q.fonte ? ` <span class="fn">(${esc(q.fonte)})</span>` : ''}</p><p class="qt">${esc(q.enunciado)}</p>`;
+    opts.forEach(l => {
+      const ok = showGabarito && l === correct;
+      body += `<p class="op${ok ? ' ck' : ''}"><b>${l.toUpperCase()})</b> ${esc(q[l])}</p>`;
+    });
+    if (showGabarito && q.explicacao) {
+      body += `<div class="ex"><b>Explicação:</b> ${esc(q.explicacao)}</div>`;
+    }
+    body += '</div>';
+  });
+  if (!showGabarito) {
+    body += '<div class="gb"><h2>Gabarito</h2><div class="gg">';
+    gabList.forEach(g => { body += `<span><b>${g.n}.</b>&nbsp;${g.g}</span>`; });
+    body += '</div></div>';
+  }
+  const css = `body{font-family:Georgia,serif;font-size:11pt;max-width:680px;margin:1.5cm auto;color:#111}h1{font-size:14pt;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:4px}.meta{font-size:9pt;color:#777;margin-bottom:1.5em}.qb{margin:1.2em 0;page-break-inside:avoid}.qn{font-weight:700;margin:0 0 2px}.fn{font-size:9pt;font-weight:normal}.qt{margin:0 0 6px}.op{margin:2px 0}.ck{color:green;font-weight:700}.ex{margin:6px 0 0;padding:6px 8px;background:#f0f7f0;border-left:3px solid green;font-size:9.5pt}.gb{margin-top:2em;border-top:2px solid #000;padding-top:1em;page-break-before:always}.gb h2{font-size:12pt;margin-bottom:.5em}.gg{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;font-size:10pt}@page{margin:2cm}`;
+  const w = window.open('', '_blank', 'width=820,height=650');
+  if (!w) { alert('Permita pop-ups para gerar o PDF.'); return; }
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Questões – ${esc(dayTitle)}</title><style>${css}</style></head><body><h1>Questões – ${esc(dayTitle)}</h1><p class="meta">${DATE} &middot; ${questoesData.length} questões &middot; ${new Date().toLocaleDateString('pt-BR')}</p>${body}</body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 600);
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────
 loadTimerState();
+initPomoUI();
 initProgress();
 initMeta();
 renderRecursos();
