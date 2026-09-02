@@ -1,0 +1,689 @@
+Abrindo PDF...
+Páginas: 1476 — extraindo texto...
+  Lendo página 1/1476...
+  Lendo página 201/1476...
+  Lendo página 401/1476...
+  Lendo página 601/1476...
+  Lendo página 801/1476...
+  Lendo página 1001/1476...
+  Lendo página 1201/1476...
+  Lendo página 1401/1476...
+Analisando candidatos...
+
+Total candidatos homologados: 44,695
+
+CANDIDATOS POR PERFIL:
+  13,488  Desenvolvimento de Software  <-- SEU PERFIL
+   9,948  Administração e Governança
+   4,311  Engenharia
+   3,822  Gestão de Serviços de TIC
+   3,680  Advocacia
+   3,595  Inteligência da Informação
+   3,152  Análise de Negócio de TI
+   2,106  Comunicação Social
+     593  Gestão Econômico-Financeira
+
+Desenvolvimento de Software — 13,488 candidatos por local de prova:
+  1,709  ███████████████████████████████████   12.7%  João Pessoa/PB
+  1,686  ███████████████████████████████████   12.5%  Fortaleza/CE
+  1,423  █████████████████████████████         10.6%  Brasília/DF
+  1,269  ██████████████████████████             9.4%  Natal/RN
+  1,198  █████████████████████████              8.9%  Rio de Janeiro/RJ
+  1,049  █████████████████████                  7.8%  Recife/PE
+  1,024  █████████████████████                  7.6%  São Paulo/SP
+    625  █████████████                          4.6%  Florianópolis/SC  <-- VOCE
+    550  ███████████                            4.1%  Salvador/BA
+    381  ████████                               2.8%  Belo Horizonte/MG
+    348  ███████                                2.6%  Porto Alegre/RS
+    320  ███████                                2.4%  Teresina/PI
+    314  ██████                                 2.3%  Curitiba/PR
+    235  █████                                  1.7%  Aracaju/SE
+    189  ████                                   1.4%  Belém/PA
+    179  ████                                   1.3%  Goiânia/GO
+    146  ███                                    1.1%  Vitória/ES
+    145  ███                                    1.1%  São Luís/MA
+    134  ███                                    1.0%  Manaus/AM
+    127  ███                                    0.9%  Campo Grande/MS
+    109  ██                                     0.8%  Cuiabá/MT
+    101  ██                                     0.7%  Maceió/AL
+     73  █                                      0.5%  Porto Velho/RO
+     54  █                                      0.4%  Palmas/TO
+     40  █                                      0.3%  Boa Vista/RR
+     31  █                                      0.2%  Rio Branco/AC
+     29  █                                      0.2%  Macapá/AP
+
+SUA CONCORRÊNCIA — Florianópolis/SC / Desenvolvimento de Software:
+  Candidatos inscritos   : 625
+  Vagas efetivas         : 20
+  Cadastro de reserva    : 80
+  Total vagas + reserva  : 100
+  Relação cand/vaga (ef.): 31:1
+  Relação cand/vaga (+CR): 6:1
+  % do total do perfil   : 4.6% dos candidatos de Desenvolvimento de Software
+
+  Lista completa de candidatos em Florianópolis/SC (ordem alfabética):
+    1. 260000761471  Aaron de Melo Ostroski
+    2. 260000777113  Ademilton Amaro Mariano
+    3. 260000721792  Adriano Ferreira da Silva
+    4. 260000818022  Adriano Odorizzi
+    5. 260000895816  Akina Kurita
+    6. 260000871591  Alessandro Luís França Krepk
+    7. 260000724242  Alessandro Pimenta Fermiano Ferreira
+    8. 260000900655  Alex Costa Freitas da Silva
+    9. 260000867671  Alex David Ribeiro
+   10. 260000828273  Alex Davis Neuwiem da Silva
+   11. 260000711221  Alex Martins Celso
+   12. 260000868513  Alexandre Andrade Minichiello
+   13. 260000848374  Alexandre França Vaz dos Santos
+   14. 260000710721  Alexandre Gonçalves Liberato
+   15. 260000902824  Alexandre Monte Ribeiro
+   16. 260000880197  Alexandre Polidoro Galletta
+   17. 260000811053  Alexandre Pscheidt
+   18. 260000726798  Alexandre Tessaro Vieira
+   19. 260000877565  Alexandre de Medeiros Machado
+   20. 260000723907  Alexsander Kurtz Viera
+   21. 260000843302  Alexsander de Souza Faria
+   22. 260000895465  Alfredo Henrique Almeida Goeten
+   23. 260000724348  Aline Lima Nunes
+   24. 260000897857  Allison de Souza
+   25. 260000876990  Amanda Espindola Aguiar da Silva
+   26. 260000850451  Amanda Nakakogue
+   27. 260000896568  Amanda Zanella de Mello
+   28. 260000912641  Ana Clara Stupp de Souza
+   29. 260000889396  Ana Flavia de Freitas Correa
+   30. 260000886152  Ana Letícia de Bortoli
+   31. 260000883944  Ana Paula Althoff
+   32. 260000824628  Ana Vitória Menezes de Paula
+   33. 260000896186  Anderson Demetrio Placido
+   34. 260000911084  Anderson Denardin
+   35. 260000904677  Anderson Mariano Pereira Estumano
+   36. 260000805610  Anderson Silveira Laurindo
+   37. 260000909312  Andre Azevedo Vargas
+   38. 260000860515  Andre Craco
+   39. 260000868034  Andre Luis Francisco Junior
+   40. 260000769782  Andre Luiz dos Santos
+   41. 260000896161  Andre Paulao Aliardi
+   42. 260000842240  Andrei Antonio Villa
+   43. 260000880393  Andressa Andrade Oliveira
+   44. 260000784297  Andrew Matheus Nóbrega Cabral
+   45. 260000730269  André Albino Peres da Silva
+   46. 260000910024  André Felipe dos Santos
+   47. 260000808610  André Medina Vianna
+   48. 260000723529  André Roberto Alves de Oliveira
+   49. 260000814180  André de Jesus Santana
+   50. 260000899970  Anthony Guilherme Cazuni da Silva
+   51. 260000812855  Antonio Marcos Mello
+   52. 260000911495  Antonio Rabelo Júnior
+   53. 260000889501  Antônio Malato Ribeiro Neto
+   54. 260000854290  Antônio Valter Pires Neto
+   55. 260000835879  Arthur Costa Gruber
+   56. 260000888328  Arthur Longhi
+   57. 260000876407  Arthur Luís Lima Bender
+   58. 260000866046  Arthur Machado Capaverde
+   59. 260000745176  Arthur de Mello Lucena
+   60. 260000907154  Artur Andrade Lopes
+   61. 260000912941  Artur Francisco Feldhaus
+   62. 260000709895  Artur Luiz Rizzato Toru Soda
+   63. 260000904148  Artur Manarin de Jesus
+   64. 260000765105  Artur Tribeck Ferreira Tomaz
+   65. 260000903569  Assis Frello
+   66. 260000909763  Athos Marwin Bauer
+   67. 260000715941  Augusto Menezes Savaris
+   68. 260000903177  Barbara Idaerla Santos Calderon
+   69. 260000895937  Barbara Rarine Nery Martinez de Lucena
+   70. 260000862609  Beatriz Farias Peres
+   71. 260000910926  Bernardo Pasa Ribeiro
+   72. 260000835620  Betina Corazza Ferrão
+   73. 260000884824  Breno Cardoso Bezerra de Menezes
+   74. 260000838230  Breno Falkievecz Sehnem
+   75. 260000822954  Breno Thales Araújo Domingos
+   76. 260000909306  Bruna Neto Bitencourt
+   77. 260000872829  Bruno Abel Milanez
+   78. 260000736290  Bruno Brito Mendes
+   79. 260000884154  Bruno Carmo Nunes
+   80. 260000870074  Bruno Ecker Sanceverino Gonçalves
+   81. 260000761132  Bruno Fernandes Foligno dos Santos
+   82. 260000728467  Bruno Leal Freitas
+   83. 260000898682  Bruno Machado de Almeida
+   84. 260000732323  Bruno Marchi Pires
+   85. 260000830036  Bruno Mello Coelho Santos
+   86. 260000716600  Bruno Oliveira Leal
+   87. 260000843413  Bruno Pagliarini Freitas
+   88. 260000882761  Bruno de Campos Monteiro Gomes
+   89. 260000909936  Bruno de Oliveira Martiniano
+   90. 260000903981  Bruno de Souza Gomes
+   91. 260000894632  Bárbara Rech
+   92. 260000716457  Caio Moreno Pimentel Espindola
+   93. 260000901402  Caio Noguerol Motta
+   94. 260000856681  Caio William Camargo Carrara
+   95. 260000755966  Caique Lacerda Martel
+   96. 260000878816  Camila Galieta Bernardes
+   97. 260000865046  Camila Pregioni Bayma
+   98. 260000717051  Camila Sixel Cordeiro
+   99. 260000729196  Camila do Nascimento Bodack
+  100. 260000720062  Carelyne Guibes
+  101. 260000866243  Carlos Alexandre Ferreira Bentes
+  102. 260000776355  Carlos César da Rosa
+  103. 260000708759  Carlos Eduardo da Silva Magalhães
+  104. 260000911550  Carlos Eugênio Barbosa Tubino
+  105. 260000899989  Carlos Juarez Pinheiro
+  106. 260000841026  Carlos Júnior Uchôa Oliveira
+  107. 260000726410  Caroline Gazulha Paulo
+  108. 260000893002  Cassiano Faria
+  109. 260000851811  Cassio da Pieva Ehlers
+  110. 260000716956  Catherine Paula Chitolina Cornelio
+  111. 260000787045  Cauã Loch Fernandes
+  112. 260000830970  Charlis Saraiva Aristimunha
+  113. 260000889156  Claiton Londero Cezar
+  114. 260000717980  Claudio Ferreira Filho
+  115. 260000912617  Clayton Zambon
+  116. 260000902588  Clayver da Silva Farias
+  117. 260000721562  Cleber Luis Simm
+  118. 260000859290  Cleiton Florentino Bueno
+  119. 260000867484  Clodoaldo de Campos Marques
+  120. 260000722418  Clóvis Elias Hiller de Borba
+  121. 260000891149  Conrado Zeitune Ruas
+  122. 260000848745  Cristian Assis Rocha Yamamoto
+  123. 260000884466  Cristian Ricardo Leite
+  124. 260000882267  Cristiane Schauffert
+  125. 260000886643  Cristiano Goncalves e Souza
+  126. 260000835428  Damares do Socorro Gonçalves Gaia
+  127. 260000846688  Daniel Alves de Araújo Martins
+  128. 260000871682  Daniel Cardoso
+  129. 260000753480  Daniel Gomes
+  130. 260000723800  Daniel Khalil Silva e Sousa
+  131. 260000881886  Daniel Outeiro dos Santos
+  132. 260000900929  Daniel Paorã Dias Januário
+  133. 260000887460  Daniel Pierrelus
+  134. 260000908723  Daniel Ribeiro Baldoino
+  135. 260000715312  Daniel Roberto de Aguiar
+  136. 260000719303  Daniel Rodrigues Minuzzi
+  137. 260000906789  Danielle Rocha dos Santos Sena
+  138. 260000801674  Danielle Suzan Daltrozo
+  139. 260000902265  Davi Cardoso Rhee
+  140. 260000732374  David Antonio Behling
+  141. 260000807023  David Gerson Ramos de Andrade
+  142. 260000770068  David Pedro Willemann
+  143. 260000902652  Davyson Natanael Sindeaux de Oliveira
+  144. 260000898183  Debora Cristina Pereira Gonçalves
+  145. 260000728045  Deborah Cristina Cimadon Natziuk
+  146. 260000711192  Deyson Alves Rodrigues
+  147. 260000909542  Diego Benites Paradeda
+  148. 260000856124  Diego Hahn Fração
+  149. 260000847876  Dimas Sulz Gonsalves Filho
+  150. 260000838781  Diogo Pereira Dias
+  151. 260000831965  Douglas Hercílio Bastos
+  152. 260000876655  Douglas Rodrigues Toledo
+  153. 260000709326  Dário Júnior Nascimento da Silva
+  154. 260000831801  Ederaldo Jovino da Silva
+  155. 260000821918  Edoardo Colares de Oliveira
+  156. 260000877920  Eduarda Assing
+  157. 260000884849  Eduarda Cassol de Oliveira Alves
+  158. 260000864371  Eduarda Porto Bandeira
+  159. 260000717083  Eduarda Ricaldes Barboza Alves
+  160. 260000864509  Eduardo Achar
+  161. 260000902550  Eduardo Augusto Formigheri Moretto
+  162. 260000847563  Eduardo Augusto Vila Pereira
+  163. 260000909926  Eduardo Claudino de Carvalho
+  164. 260000894966  Eduardo Dandolini Dutra
+  165. 260000732813  Eduardo Diconcili Costa
+  166. 260000741829  Eduardo Martins Lima
+  167. 260000913372  Eduardo Miranda Peloso da Silva
+  168. 260000880925  Eduardo Tokas
+  169. 260000762808  Eduardo Vinicius Reimer
+  170. 260000720828  Eliezer Branco Caetano
+  171. 260000874343  Elisangela Martins Jacques
+  172. 260000814767  Elyson Emanuel da Silva
+  173. 260000863006  Emanuella Clemente Machado Bordim
+  174. 260000743759  Emilio Marques Lima
+  175. 260000817985  Enzo da Rocha Laranjeira
+  176. 260000823333  Eric Alex Cardoso Friess
+  177. 260000848137  Eric Fernando Avelino da Silva Neves
+  178. 260000913052  Esrom Ademir de Oliveira
+  179. 260000765433  Estela Mackedanz Matarredona
+  180. 260000755547  Evandro Machado Pereira
+  181. 260000880993  Ewaldo Uhlmann Junior
+  182. 260000910989  Fabio Medeiros Nasario
+  183. 260000822065  Fabio Pedrinho Zimmermann
+  184. 260000887238  Felipe Alexandre Ferreira
+  185. 260000908896  Felipe Apio de Souza
+  186. 260000864090  Felipe Cunha Cardoso
+  187. 260000896761  Felipe Humberto Arjonas Zansavio
+  188. 260000876933  Felipe Lopes de Menezes Gondim
+  189. 260000731841  Felipe Moura de Jesus
+  190. 260000894846  Felipe Nazario Avelino
+  191. 260000824064  Felipe Nestor Dresch
+  192. 260000903949  Felipe Paris
+  193. 260000749762  Felipe Ricardo Guntensperger Sousa
+  194. 260000776738  Felipe Silva de Borba
+  195. 260000836040  Felipe de Almeida Neves
+  196. 260000913404  Felipe de Souza Goulart
+  197. 260000774001  Fernanda Caetano Cardoso
+  198. 260000904434  Fernanda Caroline Silveira Rodrigues
+  199. 260000719238  Fernando Gabriel Fucks Pedro
+  200. 260000807491  Flaviano de Aguiar
+  201. 260000901553  Francielle Eliete Sales
+  202. 260000909215  Francisco Igor Garcia
+  203. 260000732188  Fábio Simones
+  204. 260000708370  Fábio de Oliveira e Silva
+  205. 260000909612  Gabriel Ache de Souza
+  206. 260000911404  Gabriel Angelo Kaufmann
+  207. 260000813624  Gabriel Antonio Rodrigues Barba
+  208. 260000719973  Gabriel Bitdinger Medeiros
+  209. 260000903742  Gabriel Dartora Besbati
+  210. 260000872733  Gabriel Fujiwara Costa
+  211. 260000740959  Gabriel Gomes Queiroz Almeida
+  212. 260000722259  Gabriel Jaques Couto
+  213. 260000842575  Gabriel Pordeus Santos
+  214. 260000817290  Gabriel Sagás da Silva
+  215. 260000878022  Gabriel Solanha
+  216. 260000805787  Gabriel da Fonseca Meira
+  217. 260000898305  Gabriel dos Passos Santos
+  218. 260000888047  Gabriela Regina Lother
+  219. 260000876965  Gabriela da Silva Alvarenga
+  220. 260000909148  Geferson Borges Buzzello
+  221. 260000902733  Geovani Nascimento da Fonseca
+  222. 260000745075  Gerson Otavio de Souza
+  223. 260000716933  Gerson de Sousa Santos Júnior
+  224. 260000843981  Gibram Goulart Farias
+  225. 260000904230  Giordano Pezzutti Bini
+  226. 260000724341  Gisele Cristina da Costa
+  227. 260000832211  Giulia Santos Lima
+  228. 260000867371  Gregori Franck Cardoso Franco
+  229. 260000889273  Gregory Schmidt Daniel
+  230. 260000862204  Guilherme Bertol da Silva
+  231. 260000827411  Guilherme Dalarosa Albrecht
+  232. 260000854886  Guilherme Fernandes
+  233. 260000857012  Guilherme da Silva Baptista
+  234. 260000865121  Guilherme da Silva Schveitzer
+  235. 260000872043  Guilherme do Amaral Alves
+  236. 260000885621  Gustavo Coelho da Costa
+  237. 260000911617  Gustavo Cruz Pinheiro
+  238. 260000825190  Gustavo Drohobeczky Silles
+  239. 260000853776  Gustavo Frazzon
+  240. 260000711715  Gustavo Fukushima de Salles
+  241. 260000870135  Gustavo Girotto
+  242. 260000904025  Gustavo Henrique Añasco
+  243. 260000821506  Gustavo Lessa Benedet
+  244. 260000811025  Gustavo Pinho Kretzer de Souza
+  245. 260000752119  Gustavo Silva
+  246. 260000869219  Gustavo dos Santos Demate
+  247. 260000860864  Gutyerrez Oliveira Monteiro Filho
+  248. 260000811629  Harisson Jorge Souza Pontes
+  249. 260000715877  Heitor dos Reis Ribeiro
+  250. 260000878659  Hemerson da Silva Violin
+  251. 260000888766  Henrique Fernandes Neto
+  252. 260000852043  Henrique Pereira Ramos
+  253. 260000865391  Hercules Mateus Avanzini
+  254. 260000844871  Herick Andrei de Carvalho
+  255. 260000725296  Hiago William Petris
+  256. 260000718632  Hiury Harrison dos Santos
+  257. 260000883309  Hélio Henrique Rodrigues Guimarães
+  258. 260000901908  Iago Luigi Boebel
+  259. 260000731422  Ian Pires da Silva
+  260. 260000861924  Ian Ribeiro Ferranti
+  261. 260000853091  Iatamy Bilton Clarinda
+  262. 260000865717  Igor Santiago
+  263. 260000830318  Ingrid Grasieli de Campos
+  264. 260000801659  Isabella Schlemper Bernardo
+  265. 260000726774  Isabelle Cirio da Silva Fraga
+  266. 260000805198  Isac Martins
+  267. 260000820264  Isadora Dahmer Barbosa
+  268. 260000749409  Isak Gabriel Chedid Girardello
+  269. 260000872026  Itatelino de Oliveira Leite Neto
+  270. 260000893737  Ivo Ramos Junior
+  271. 260000900376  Jackson Kelvin de Souza
+  272. 260000736285  Jacson Robson Ritzmann
+  273. 260000860302  Jandson Talison Teixeira de Sousa
+  274. 260000723312  Janynne Stephanie de Oliveira Palheta
+  275. 260000876288  Jean Lucas Dias Carneiro
+  276. 260000900507  Jean Vitor Barbosa de Almeida
+  277. 260000880496  Jeferson Correa da Silva
+  278. 260000910341  Jefferson Paulo Machado
+  279. 260000817977  Jepherson Tavares de Melo Junior
+  280. 260000838758  Jesse Ricardo Rogerio
+  281. 260000869737  Jessica Vicente Alves Farias
+  282. 260000873766  Jessé Roberto dos Santos
+  283. 260000884801  Jhonatta dos Santos Costa
+  284. 260000907029  Joao Pedro Blanco
+  285. 260000888753  Joao Victor Ferreira Stempniak
+  286. 260000708657  Jofre Garcia Barros
+  287. 260000723332  John Helder Cardoso dos Santos
+  288. 260000908277  Johnny Wesley da Silva Santos
+  289. 260000801748  Johny Patrick da Silva Ferreira
+  290. 260000875856  Jonas Alves Martins
+  291. 260000740324  Jonas Pedroso Cabral
+  292. 260000892004  Jonatas Alves da Silva
+  293. 260000746925  Jonatas Davson Reinert
+  294. 260000708829  Jonathan Andrei da Cruz
+  295. 260000864401  Jonathan Tenório de Lima
+  296. 260000893952  Jonathan Vinícius Suter
+  297. 260000836564  Jonathan dos Santos Teixeira
+  298. 260000880345  Josué Borges de Oliveira
+  299. 260000864490  José Augusto Coelho Varandas
+  300. 260000877055  José Gustavo de Almeida Alves
+  301. 260000909246  José Ribamar Marçal Martins Júnior
+  302. 260000857596  José Roberto Moura Regis
+  303. 260000715997  José Samuel dos Santos Garcia
+  304. 260000840884  Joyce Helena Bitencourt Jorge
+  305. 260000793355  João Carlos Vicente
+  306. 260000872102  João Eduardo de Aquino Silveira
+  307. 260000800756  João Gustavo Koche dos Santos
+  308. 260000901627  João Leite de Carvalho
+  309. 260000728457  João Luis Machado Martins
+  310. 260000867306  João Pedro Barreto Maximiano
+  311. 260000849980  João Pedro Gentil da Silveira
+  312. 260000880349  João Pedro Greif de Souza
+  313. 260000828131  João Pedro Zibetti Girardello
+  314. 260000900002  João Victor Mendes de Oliveira
+  315. 260000742888  João Victor Neves Zaniboni
+  316. 260000817409  João Victor dos Santos Oliveira
+  317. 260000864151  João Vitor Fernandes de Brito
+  318. 260000870987  Juan Israel Souza
+  319. 260000816488  Juan Víctor Soares Duarte
+  320. 260000909245  Jucelino Roberto Bradacz Filho
+  321. 260000838459  Juliana Ruby
+  322. 260000709884  Julio Barbosa da Costa Gomes
+  323. 260000725265  Julio Cesar de Almeida Junior
+  324. 260000846497  Julliana Gnecco
+  325. 260000890235  Jéssica Oliveira Soares
+  326. 260000881173  Júlia Manuela Turnes
+  327. 260000894794  Júlio Henrique Becker
+  328. 260000832460  Kaiena Martins Feitosa
+  329. 260000815835  Kaio Wellington Farias da Costa
+  330. 260000726106  Kaique Vieira Jorge
+  331. 260000850735  Kaique dos Santos Guimarães
+  332. 260000903073  Kalidsa Buzzatti de Oliveira
+  333. 260000717197  Kamila Pereira Rodrigues
+  334. 260000711029  Karolyne Silva Alves
+  335. 260000839928  Katia Regina Loch Bez Bortolon
+  336. 260000711648  Katiri Bardini Marcelino
+  337. 260000709201  Katleen Lima Barros
+  338. 260000908204  Kauê Gustavo Kluska
+  339. 260000897009  Kener Dal Bo da Silva
+  340. 260000908504  Kerem Jovielly Sudre dos Reis
+  341. 260000714764  Keslyn Bus Cristaldo
+  342. 260000723670  Kevin Kollin Vogado Silva
+  343. 260000850767  Lais Menezes Sant'ana
+  344. 260000708888  Laura Maria Bertassi
+  345. 260000728124  Layon Iaemori
+  346. 260000832927  Leandro Fernandes dos Santos
+  347. 260000884323  Leandro Fontana Schweitzer
+  348. 260000864988  Leandro Gonçalves de Sousa
+  349. 260000891978  Leandro Rogala Britez
+  350. 260000873177  Lenon Fernandes Philippi
+  351. 260000867092  Leonardo Bertol da Silva
+  352. 260000832513  Leonardo Cirimbelli de Luca
+  353. 260000721901  Leonardo Correa Brasil
+  354. 260000842085  Leonardo Edenir Rodrigues Graciano
+  355. 260000847804  Leonardo Gideão Costa Rocha
+  356. 260000727221  Leonardo Machado Vieira
+  357. 260000812583  Leonardo Martins da Silva
+  358. 260000894513  Leonardo de Medeiros Binatti
+  359. 260000850305  Leonardo de Souza Nunes
+  360. 260000871068  Leonardo do Valle
+  361. 260000709662  Letícia Beatriz Souza
+  362. 260000835126  Letícia Vieira
+  363. 260000908348  Lielison Ramos
+  364. 260000837739  Lisandro Silva de Menezes
+  365. 260000834426  Livia Corazza Ferrao
+  366. 260000727128  Loaynne da Silva Carvalho Costa
+  367. 260000806569  Luan Diniz Moraes
+  368. 260000713603  Luan Roberto Peppe Costa
+  369. 260000901978  Luana Catarina de Oliveira
+  370. 260000771820  Luana Portella Rodriguez
+  371. 260000804726  Luandre Bernardi de Andrade
+  372. 260000728724  Lucas Antonio Amorim Martins Moroski
+  373. 260000719400  Lucas Barbieri Catarina
+  374. 260000872144  Lucas Biz Teixeira
+  375. 260000851674  Lucas Bruner
+  376. 260000828264  Lucas Castro Truppel Machado
+  377. 260000903382  Lucas Cinigalia Francisco
+  378. 260000766502  Lucas Daim Marconi Esteves
+  379. 260000894440  Lucas Dorregao Campos
+  380. 260000708677  Lucas Eduardo Nogueira
+  381. 260000890220  Lucas Eduardo Vieira de Castro
+  382. 260000913544  Lucas Farias Silva
+  383. 260000913886  Lucas Monteiro Brittos
+  384. 260000902141  Lucas Muller Coelho Lima
+  385. 260000888394  Lucas Oliveira de Moura
+  386. 260000878389  Lucas Pereira Carvalho
+  387. 260000888062  Lucas Ranieri Maagh Ramos
+  388. 260000880705  Lucas Roncon Goncalves
+  389. 260000914517  Lucas Spezzia
+  390. 260000902624  Lucas Zambrano Barboza
+  391. 260000753579  Lucas da Costa Stuker
+  392. 260000826750  Lucas da Silva Gautério
+  393. 260000899347  Lucas de Assis Beirão
+  394. 260000880576  Lucas de Queiroz Trugilo May
+  395. 260000730852  Lucas do Amaral Santos
+  396. 260000875139  Lucas dos Santos Soares
+  397. 260000895922  Luciano Rocha Pereira
+  398. 260000804826  Luciano Velho Garcia
+  399. 260000711450  Luigy Valente Favaretto da Maia
+  400. 260000738937  Luis Armando Paglioza
+  401. 260000893878  Luis Carlos Elias
+  402. 260000878620  Luis Felipe Guerreiro Ota
+  403. 260000717689  Luis Fernando Albino
+  404. 260000903582  Luis Gustavo Mazurkievicz
+  405. 260000715112  Luis Oswaldo dos Santos Ganoza
+  406. 260000752672  Luis Philippe da Silva de Souza
+  407. 260000812061  Luiz Adriano Augusto dos Santos
+  408. 260000830580  Luiz Augusto Klitzke Vitor
+  409. 260000912589  Luiz Carlos Francisco Junior
+  410. 260000902304  Luiz Felipe Lima de Jesus
+  411. 260000880471  Luiz Felipe Schroder Marcon
+  412. 260000822192  Luiz Fernando Petris
+  413. 260000822682  Luiz Fernando Schelbauer
+  414. 260000871590  Luiz Fernando de Morais
+  415. 260000893118  Luiz Fernando do Nascimento Milanese
+  416. 260000895271  Luiza Santos Marialva
+  417. 260000886862  Lígia Sell
+  418. 260000881308  Manoella Souza
+  419. 260000892920  Mara Júlia Ávila
+  420. 260000836202  Marcella Coelho Brito Nunes
+  421. 260000822230  Marcelo Emilio Vendramin
+  422. 260000877774  Marcelo Fabricio de Mello
+  423. 260000903461  Marcelo Machado Corrêa Junior
+  424. 260000808517  Marcelo Melz
+  425. 260000841499  Marcelo Trebien Dupont
+  426. 260000828191  Marcelo dos Santos Machado
+  427. 260000896366  Marcio Vilmar Zimmermann
+  428. 260000807518  Marcio Zago Andrate
+  429. 260000723852  Marco Antônio Diogo da Silva
+  430. 260000815461  Marcos Andre Araujo Costa
+  431. 260000711762  Marcos Andre Diaz Farias
+  432. 260000876425  Marcos Augusto Gomes da Rocha
+  433. 260000731061  Marcos Bonfante
+  434. 260000909761  Marcos Michel Luciano
+  435. 260000834215  Marcos Oliveira Junior
+  436. 260000875259  Marcos Roberto Fernandes Filho
+  437. 260000731709  Marcos Silva Laydner
+  438. 260000744791  Marcus Vinicius Cardoso Ferreira
+  439. 260000893577  Marcus Vinícius Reis Albino
+  440. 260000835841  Maria Antônia dos Santos
+  441. 260000789939  Maria Braulia de Souza Porto Fares
+  442. 260000883959  Maria Eduarda Betman Damazio Jaques
+  443. 260000911375  Maria Eduarda Sampietro Pinto
+  444. 260000902340  Maria Eduarda da Silva Batista
+  445. 260000765860  Maria Luiza Santos Suckow
+  446. 260000722536  Mariele Vieira da Silva
+  447. 260000873306  Marionei Zerbieli
+  448. 260000884827  Marla Pacheco Bittencourt
+  449. 260000724995  Marlon Roberto Costa
+  450. 260000878188  Mateus Lima de Almeida
+  451. 260000717191  Mateus Schiavo Caldas
+  452. 260000723776  Mateus Schneider de Jesus
+  453. 260000708692  Matheus Bayer Siqueira
+  454. 260000870670  Matheus Bernardi Nascimento da Silva
+  455. 260000850431  Matheus Felipe Bertonceli Bueno
+  456. 260000765896  Matheus Gabriel da Silva
+  457. 260000807100  Matheus Henrique Padilha Dutra
+  458. 260000836195  Matheus Konorat
+  459. 260000843952  Matheus Lemos Dias
+  460. 260000873452  Matheus Moreira da Silva
+  461. 260000899465  Matheus Schienemayer Woloszyn
+  462. 260000752298  Matheus Schorr Heck
+  463. 260000899007  Matheus Souza Garcez
+  464. 260000902333  Mauricio Zatt
+  465. 260000727108  Mauro Bruno Rodrigues de Lima
+  466. 260000767359  Mauro Soares Fernandes Júnior
+  467. 260000888643  Maurício Brescianini Marques
+  468. 260000787256  Maximiliano Matheus Furtado
+  469. 260000905737  Maxwell Allan da Silva Kimura
+  470. 260000719997  Michel Manarin
+  471. 260000709756  Michele Cristiny Pereira
+  472. 260000816112  Michelle Strey de Oliveira
+  473. 260000903754  Miguel Augusto Bomfim
+  474. 260000893546  Miguel Lino Ferreira Neto
+  475. 260000712314  Naiara Ferreira Xavier da Silva Martins
+  476. 260000746377  Natalina Dalisete Tombini Rosa
+  477. 260000854592  Natan Martins dos Santos
+  478. 260000709047  Nathália Dagort Ferlin
+  479. 260000712069  Nicolas Carvalho Pinto Becker
+  480. 260000761435  Nicolas Henrry Neira Benavides
+  481. 260000826218  Nicolas Kotelak Junges
+  482. 260000908724  Nicolas Ribeiro Baldoino
+  483. 260000851833  Nicolas de Bona
+  484. 260000876385  Ormair Ramalho Pereira
+  485. 260000743505  Pablo Cavalheiro Viero
+  486. 260000756820  Pablo Pereira Lírio
+  487. 260000859770  Paola de Oliveira Abel
+  488. 260000908214  Paolo Jourdan Campana Murari
+  489. 260000890089  Patricia Gesser
+  490. 260000847615  Patricia Regina Rodrigues
+  491. 260000808897  Patrick Placido Bez Fontana
+  492. 260000834104  Patrick Venturin
+  493. 260000751561  Patrik da Silva Schwindt
+  494. 260000842939  Paula Alessandra Rodrigues dos Santos
+  495. 260000869015  Paulo Eduardo Wagner
+  496. 260000815503  Paulo Henrique da Silva Pereira
+  497. 260000736473  Paulo Roberto Martins dos Santos
+  498. 260000867258  Paulo Victor Costa Vasconcelos
+  499. 260000771753  Pedro Ferreira Guimarães
+  500. 260000901754  Pedro Guimarães Caninas
+  501. 260000721723  Pedro Henrique Botega
+  502. 260000909027  Pedro Henrique Solano de Oliveira
+  503. 260000831375  Pedro Ivo Espíndola Monte
+  504. 260000893488  Pedro José Laurenti de Matos
+  505. 260000891653  Pedro Kowalski Pereira
+  506. 260000914357  Pedro Luis Schultz Sarmento
+  507. 260000838803  Pedro Manuel Bugs Pereira
+  508. 260000811791  Pedro Reiser da Costa
+  509. 260000825149  Phillip Alves Medeiros
+  510. 260000744110  Pollyana Thays Lameira Ritzmann
+  511. 260000714837  Radamés Araújo Terhorst
+  512. 260000912458  Rafael Barbosa Machado
+  513. 260000826301  Rafael Ceccatto Blomer
+  514. 260000833160  Rafael Gentil de Oliveira
+  515. 260000880701  Rafael Lapa Valgas
+  516. 260000883782  Rafael Machado Matos
+  517. 260000850288  Rafael Rodrigues Ribeiro Junior
+  518. 260000885064  Rafael Santos Santana
+  519. 260000724811  Raissa Vieira da Silva
+  520. 260000827133  Ramon de Souza Cardoso
+  521. 260000759263  Raphael Augusto dos Santos
+  522. 260000716202  Raul Pietsch dos Santos
+  523. 260000894578  Raul Teodoro da Silva
+  524. 260000759639  Raul Vicente Gelsleichter
+  525. 260000870823  Rebeca da Silva e Silva
+  526. 260000710410  Rebecca Santana de Pina
+  527. 260000907254  Reginaldo Leandro Plácido Filho
+  528. 260000731568  Renan Roberto Muller
+  529. 260000828806  Ricardo Cabral Figueiró
+  530. 260000861174  Ricardo Gabriel Herdt
+  531. 260000880810  Ricardo Jensen Eyng
+  532. 260000731354  Rick Lopes de Souza
+  533. 260000857922  Roberto Rolim Barbosa
+  534. 260000869965  Robson Frank Oliveira
+  535. 260000911143  Rodison dos Santos Ferreira
+  536. 260000834355  Rodolfo Ensides Gonçalves Berçanetti
+  537. 260000904100  Rodolfo Lucas Bortoluzzi
+  538. 260000831902  Rodrigo Joaquim Nunes
+  539. 260000843794  Rodrigo Lopes Velloso
+  540. 260000750105  Rodrigo Pinheiro Ramirez
+  541. 260000879786  Rodrigo Spicker Reis Silva
+  542. 260000813847  Rodrigo Vasconcelos Eluan de Araújo
+  543. 260000910092  Rodrigo Walter Afonso
+  544. 260000728678  Rodrigo de Mello Garcia
+  545. 260000865733  Rodrigo de Moraes
+  546. 260000711279  Roger Maciel Ribeiro
+  547. 260000723354  Roger Sousa dos Reis
+  548. 260000853321  Ronilton Nunes de Souza
+  549. 260000899219  Rosilene Aparecida Signorelli
+  550. 260000912307  Rui Geraldo da Silva Neto
+  551. 260000715554  Sabrina dos Passos Tortelli
+  552. 260000726330  Sam Pazouki Varooneh
+  553. 260000729160  Samantha Costa de Sousa
+  554. 260000879576  Samuel Koepsel
+  555. 260000904264  Saron Medeiros Philippi
+  556. 260000815569  Saulo Brustolin
+  557. 260000712713  Saulo Camara Faria
+  558. 260000908544  Scheila Nair Costa
+  559. 260000738103  Sebastien Lionel Lubin
+  560. 260000842166  Sergio Rolim Barbosa
+  561. 260000877743  Sidenir de Borba
+  562. 260000801061  Silvio Roberto Araujo Seara Willemann
+  563. 260000769727  Simone Gomes de Araujo
+  564. 260000713012  Simone Penido
+  565. 260000786547  Sorelle Castelle Fernandes Brito
+  566. 260000716640  Sylvia de Albuquerque Heiden
+  567. 260000840780  Sérgio Mendes de Oliveira Abreu
+  568. 260000766114  Taíssa Mota Massochini
+  569. 260000885274  Teo Haeser Gallarza
+  570. 260000888214  Thaiz da Silveira Peters
+  571. 260000886144  Thales Bernardo Lopes
+  572. 260000753827  Thales Henrique Ferri
+  573. 260000740673  Theo de Souza Gerhardt
+  574. 260000751954  Thiago Carlos Andrade
+  575. 260000728185  Thiago Ferreira Rovere
+  576. 260000765697  Thiago Gabriel Nied Mandrik
+  577. 260000815040  Thiago Martendal Salvador
+  578. 260000745300  Thiago Mattos Silveira
+  579. 260000811280  Thiago Messias Cerqueira dos Santos
+  580. 260000908313  Thiago Ribas de Miranda
+  581. 260000814858  Thiago Weiss Silva
+  582. 260000902232  Thierry Marcoff Santana Machado
+  583. 260000909620  Thyago Rafael da Silva
+  584. 260000793151  Tiago Benaias Pompeo
+  585. 260000814258  Tiago Jampietro Bastos
+  586. 260000794211  Tiago José Valdrich
+  587. 260000879441  Tiago Silva de Jesus
+  588. 260000829665  Tiago de Lara Ribeiro
+  589. 260000861774  Túlio Marques Sathler
+  590. 260000729071  Túlio Mikael Felipe da Silva
+  591. 260000865559  Valquiria Rodrigues de Oliveira
+  592. 260000910575  Victor Andreas Rocha Baumann
+  593. 260000910888  Victor Paulo Gallas
+  594. 260000806395  Victor Schiessl
+  595. 260000759082  Victor de Souza Vieira
+  596. 260000817676  Victoria Zanella
+  597. 260000732213  Vinicius Carpes de Freitas
+  598. 260000845950  Vinicius Claudino Antunes
+  599. 260000883669  Vinicius Eduardo Oliveira
+  600. 260000875169  Vinicius Knabben Andrade
+  601. 260000752294  Vinicius Matheus de Souza
+  602. 260000727596  Vinicius Ouriques do Nascimento
+  603. 260000752632  Vinicius Valverde Cardoso
+  604. 260000852260  Vinicius de Castro Silveira
+  605. 260000731553  Vinícius Hiago Martins
+  606. 260000841600  Vitor Eduardo Silva
+  607. 260000819185  Vitor Gabriel Valeriano Gomes
+  608. 260000883601  Vitor Garcia de Vasconcelos
+  609. 260000909820  Vitor Manoel Vieira
+  610. 260000901704  Vitor Mateus Romancini do Amaral
+  611. 260000746263  Vitor Táboas Fraga
+  612. 260000758085  Vitoria Gabriele Mendonça Mendes
+  613. 260000875078  Vítor Garcez Morigi
+  614. 260000912274  Wagner Galant Saraiva
+  615. 260000890704  Walquiria de Oliveira Arruda
+  616. 260000843640  Welton Coelho Fernandes
+  617. 260000709735  Wendel Fabiano Ribeiro da Silva
+  618. 260000751281  Wheberson Hudson Migueletti
+  619. 260000840768  William Flankton Melo Ferreira
+  620. 260000730970  William Roland Kaplan
+  621. 260000857920  William Silveira Figueiredo
+  622. 260000834345  Willian Alberto Osaida
+  623. 260000828905  Wilson Gabriel de Souza
+  624. 260000848761  Éder Costa da Roza
+  625. 260000723647  Érik Santana Marconato
