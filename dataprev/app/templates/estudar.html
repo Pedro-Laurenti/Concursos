@@ -18,7 +18,7 @@
   </header>
 
   {% if entry %}
-  <article class="estudar-article">{{ entry.html | safe }}</article>
+  <article class="estudar-article" id="estudar-article" data-date="{{ date }}">{{ entry.html | safe }}</article>
   {% else %}
   <div class="study-empty">
     <p>Conteúdo ainda não disponível para este dia.</p>
@@ -85,6 +85,14 @@
         <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </button>
     </div>
+    {% if entry %}
+    <div class="sd-item" id="sd-editar-item">
+      <span class="sd-label">Editar</span>
+      <button class="sd-btn" onclick="startEditContent();toggleSD()" title="Editar conteúdo">
+        <svg class="lci" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+    {% endif %}
     <div class="sd-item" id="sd-questoes-item" style="display:none">
       <span class="sd-label">Questões</span>
       <button class="sd-btn" onclick="openQModal();toggleSD()" title="Questões do dia">
@@ -593,6 +601,7 @@ function retryQuestoes() {
   qAnswered = {};
   qScore    = { total: 0, acertos: 0 };
   currentQ  = 0;
+  window._questionShuffle = {};
   localStorage.removeItem(Q_KEY);
   renderQuestoes();
 }
@@ -634,8 +643,22 @@ function renderQuestoes() {
   // Card da questão
   const area = document.getElementById('q-card-area');
   if (!area) return;
-  const opts    = ['a','b','c','d','e'].filter(l => q[l]);
   const correct = (q.gabarito || '').toLowerCase().trim();
+
+  // Shuffle alternatives (persist per question so re-renders show the same order)
+  if (!window._questionShuffle) window._questionShuffle = {};
+  if (!window._questionShuffle[currentQ]) {
+    const rawOpts = ['a','b','c','d','e'].filter(l => q[l]);
+    const sh = rawOpts.map(l => ({ orig: l, text: q[l] }));
+    for (let i = sh.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [sh[i], sh[j]] = [sh[j], sh[i]];
+    }
+    window._questionShuffle[currentQ] = sh;
+  }
+  const shuffled = window._questionShuffle[currentQ];
+  const dispLetters = ['a','b','c','d','e'].slice(0, shuffled.length);
+  const newGabarito = dispLetters[shuffled.findIndex(x => x.orig === correct)] || correct;
 
   area.innerHTML = `
     <div class="q-card">
@@ -645,22 +668,23 @@ function renderQuestoes() {
       </div>
       <div class="q-enunciado">${esc(q.enunciado)}</div>
       <div class="q-options">
-        ${opts.map(l => {
+        ${shuffled.map((item, i) => {
+          const dl = dispLetters[i];
           let cls = '';
           if (ans) {
-            if (l === correct) cls = ' correct';
-            else if (l === ans.selected && !ans.isCorrect) cls = ' wrong';
+            if (item.orig === correct) cls = ' correct';
+            else if (item.orig === ans.selected && !ans.isCorrect) cls = ' wrong';
           }
-          return `<div class="q-opt${cls}" onclick="${ans ? '' : `checkAnswer('${l}')`}" style="${ans ? 'pointer-events:none' : ''}">
-            <span class="q-opt-letter">${l.toUpperCase()}</span>
-            <span class="q-opt-text">${esc(q[l])}</span>
+          return `<div class="q-opt${cls}" onclick="${ans ? '' : `checkAnswer('${dl}')`}" style="${ans ? 'pointer-events:none' : ''}">
+            <span class="q-opt-letter">${dl.toUpperCase()}</span>
+            <span class="q-opt-text">${esc(item.text)}</span>
           </div>`;
         }).join('')}
       </div>
       ${ans ? `
         <div class="q-feedback">
           <div class="q-feedback-answer ${ans.isCorrect ? 'q-correct' : 'q-wrong'}">
-            ${ans.isCorrect ? '&#10003; Correto!' : `&#10007; Errado &mdash; Gabarito: ${correct.toUpperCase()}`}
+            ${ans.isCorrect ? '&#10003; Correto!' : `&#10007; Errado &mdash; Gabarito: ${newGabarito.toUpperCase()}`}
           </div>
           ${q.explicacao ? `<div class="q-explicacao">${esc(q.explicacao)}</div>` : ''}
         </div>` : ''}
@@ -687,12 +711,18 @@ function goToQ(i) {
   renderQuestoes();
 }
 
-function checkAnswer(selected) {
+function checkAnswer(displayLetter) {
   if (qAnswered[currentQ]) return;
   const q       = questoesData[currentQ];
   const correct = (q.gabarito || '').toLowerCase().trim();
-  const isCorrect = selected === correct;
-  qAnswered[currentQ] = { selected, isCorrect };
+  // Map display letter back to original letter via the stored shuffle
+  const shuffled = window._questionShuffle && window._questionShuffle[currentQ];
+  const dletters = ['a','b','c','d','e'];
+  const origLetter = shuffled
+    ? (shuffled[dletters.indexOf(displayLetter)] || { orig: displayLetter }).orig
+    : displayLetter;
+  const isCorrect = origLetter === correct;
+  qAnswered[currentQ] = { selected: origLetter, isCorrect };
   qScore.total++;
   if (isCorrect) qScore.acertos++;
   saveQAnswers();
@@ -749,6 +779,136 @@ function printQuestoes(showGabarito) {
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Questões – ${esc(dayTitle)}</title><style>${css}</style></head><body><h1>Questões – ${esc(dayTitle)}</h1><p class="meta">${DATE} &middot; ${questoesData.length} questões &middot; ${new Date().toLocaleDateString('pt-BR')}</p>${body}</body></html>`);
   w.document.close();
   setTimeout(() => w.print(), 600);
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  let t = document.getElementById('estudar-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'estudar-toast';
+    t.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#2C1810;color:#fff;padding:.5rem 1.1rem;border-radius:20px;font-size:.8rem;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(() => t.style.opacity = '0', 2200);
+}
+
+// ── Editor de conteúdo do artigo ──────────────────────────────────────────
+async function startEditContent() {
+  if (!window.Quill) {
+    const loadRes = src => new Promise(res => {
+      const el = src.endsWith('.css')
+        ? Object.assign(document.createElement('link'), { rel:'stylesheet', href: src })
+        : Object.assign(document.createElement('script'), { src });
+      el.onload = res;
+      (src.endsWith('.css') ? document.head : document.body).appendChild(el);
+    });
+    // CSS can load in parallel
+    await Promise.all([
+      loadRes('https://cdn.quilljs.com/1.3.7/quill.snow.css'),
+      loadRes('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'),
+    ]);
+    // hljs must be ready before Quill so the syntax module can find it
+    await loadRes('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js');
+    await loadRes('https://cdn.quilljs.com/1.3.7/quill.min.js');
+  }
+
+  const article = document.getElementById('estudar-article');
+  const currentHtml = article.innerHTML;
+
+  article.style.display = 'none';
+  const editItem = document.getElementById('sd-editar-item');
+  if (editItem) editItem.style.display = 'none';
+
+  const editorWrap = document.createElement('div');
+  editorWrap.id = 'article-editor-wrap';
+  editorWrap.innerHTML = `
+    <div id="quill-editor-div"></div>
+    <div class="article-editor-actions">
+      <button class="article-editor-cancel" onclick="cancelEditContent()">Cancelar</button>
+      <button class="article-editor-save" onclick="saveEditContent()">Salvar</button>
+    </div>
+  `;
+  article.parentNode.insertBefore(editorWrap, article.nextSibling);
+
+  // Inject dark-theme overrides AFTER Quill CSS to win the cascade
+  if (!document.getElementById('quill-dark-override')) {
+    const s = document.createElement('style');
+    s.id = 'quill-dark-override';
+    s.textContent = `
+      .ql-snow .ql-editor code, .ql-snow .ql-editor pre { background-color: #0d1117 !important; color: #c9d1d9 !important; font-family: 'Fira Code', 'Cascadia Code', Consolas, 'Courier New', monospace !important; font-size: .82rem !important; }
+      .ql-snow .ql-editor pre { border: 1px solid var(--br,#30363d); border-radius: 6px; padding: .85rem 1rem !important; line-height: 1.6 !important; }
+      .ql-toolbar.ql-snow .ql-stroke { stroke: var(--mu,#8b949e); }
+      .ql-toolbar.ql-snow .ql-fill { fill: var(--mu,#8b949e); }
+      .ql-toolbar.ql-snow .ql-picker { color: var(--mu,#8b949e); }
+      .ql-toolbar.ql-snow button:hover .ql-stroke, .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: var(--tx,#e6edf3); }
+      .ql-toolbar.ql-snow .ql-picker-options { background: var(--sf2,#1c2129); border-color: var(--br,#30363d); }
+    `;
+    document.head.appendChild(s);
+  }
+
+  window._quillEditor = new Quill('#quill-editor-div', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'blockquote', 'code-block'],
+        [{ color: [] }],
+        ['clean']
+      ]
+    }
+  });
+  window._quillEditor.root.innerHTML = currentHtml;
+  window._originalHtml = currentHtml;
+}
+
+async function saveEditContent() {
+  const html = window._quillEditor.root.innerHTML;
+  const article = document.getElementById('estudar-article');
+  const date = article.dataset.date || '{{ date }}';
+
+  const saveBtn = document.querySelector('.article-editor-save');
+  saveBtn.textContent = 'Salvando…';
+  saveBtn.disabled = true;
+
+  try {
+    const res = await fetch(`/api/conteudo/${date}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ html, titulo: document.title })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      article.innerHTML = html;
+      article.style.display = '';
+      const editItem2 = document.getElementById('sd-editar-item');
+      if (editItem2) editItem2.style.display = '';
+      document.getElementById('article-editor-wrap').remove();
+      window._quillEditor = null;
+      showToast('Conteúdo salvo ✓');
+    } else {
+      saveBtn.textContent = 'Salvar';
+      saveBtn.disabled = false;
+      showToast('Erro ao salvar');
+    }
+  } catch(e) {
+    saveBtn.textContent = 'Salvar';
+    saveBtn.disabled = false;
+    showToast('Erro ao salvar');
+  }
+}
+
+function cancelEditContent() {
+  const article = document.getElementById('estudar-article');
+  article.innerHTML = window._originalHtml;
+  article.style.display = '';
+  document.getElementById('article-edit-btn').style.display = '';
+  document.getElementById('article-editor-wrap').remove();
+  window._quillEditor = null;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────

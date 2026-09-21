@@ -1087,3 +1087,28 @@ ol.et-list li::before { content: counter(et-cnt) '.'; font-size: .7rem; color: v
 .q-pdf-menu { position: absolute; right: 0; top: calc(100% + 4px); background: var(--srf, var(--sf)); border: 1px solid var(--bdr, var(--br)); border-radius: 8px; min-width: 210px; z-index: 200; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.14); }
 .q-pdf-menu button { display: block; width: 100%; text-align: left; padding: .55rem .85rem; font-size: .8rem; font-family: inherit; background: none; border: none; cursor: pointer; color: var(--fg, var(--tx)); transition: background .12s; }
 .q-pdf-menu button:hover { background: var(--hover, rgba(0,0,0,.06)); }
+
+/* ── Article editor (Quill inline) ───────────────────────────────────────── */
+.article-toolbar { display: flex; justify-content: flex-end; margin-bottom: .4rem; }
+.article-edit-btn { background: none; border: 1.5px solid var(--br,#30363d); border-radius: 8px; padding: .3rem .75rem; font-size: .78rem; font-weight: 600; color: var(--mu,#8b949e); cursor: pointer; transition: background .15s, color .15s; font-family: inherit; }
+.article-edit-btn:hover { background: var(--sf2,#1c2129); color: var(--tx,#e6edf3); }
+#article-editor-wrap { margin-bottom: 2rem; }
+#quill-editor-div { min-height: 320px; font-size: .9rem; background: var(--sf,#161b22); color: var(--tx,#e6edf3); }
+.ql-toolbar.ql-snow { background: var(--sf2,#1c2129); border-color: var(--br,#30363d) !important; border-radius: 8px 8px 0 0; position: sticky; top: 0; z-index: 10; }
+.ql-container.ql-snow { border-color: var(--br,#30363d) !important; border-radius: 0 0 8px 8px; }
+.ql-editor { color: var(--tx,#e6edf3); min-height: 300px; }
+.ql-snow .ql-editor code,
+.ql-snow .ql-editor pre { background-color: var(--sf,#161b22) !important; color: var(--tx,#e6edf3) !important; }
+.ql-snow .ql-editor pre.ql-syntax { border: 1px solid var(--br,#30363d); border-radius: 6px; font-size: .82rem; }
+.ql-toolbar .ql-stroke { stroke: var(--mu,#8b949e); }
+.ql-toolbar .ql-fill { fill: var(--mu,#8b949e); }
+.ql-toolbar .ql-picker { color: var(--mu,#8b949e); }
+.ql-toolbar button:hover .ql-stroke, .ql-toolbar button.ql-active .ql-stroke { stroke: var(--tx,#e6edf3); }
+.ql-toolbar button:hover .ql-fill, .ql-toolbar button.ql-active .ql-fill { fill: var(--tx,#e6edf3); }
+.ql-toolbar .ql-picker-options { background: var(--sf2,#1c2129); border-color: var(--br,#30363d); }
+.article-editor-actions { display: flex; justify-content: flex-end; gap: .6rem; padding: .5rem .75rem; background: var(--sf2,#1c2129); border: 1px solid var(--br,#30363d); border-top: none; border-radius: 0 0 8px 8px; position: sticky; bottom: 0; z-index: 10; }
+.article-editor-save { padding: .5rem 1.2rem; border-radius: 8px; border: none; background: var(--ac,#7c6ff7); color: #fff; font-size: .85rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity .15s; }
+.article-editor-save:hover { opacity: .85; }
+.article-editor-save:disabled { opacity: .5; cursor: not-allowed; }
+.article-editor-cancel { padding: .5rem 1rem; border-radius: 8px; border: 1.5px solid var(--br,#30363d); background: none; font-size: .85rem; color: var(--mu,#8b949e); cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }
+.article-editor-cancel:hover { border-color: var(--ac,#7c6ff7); color: var(--tx,#e6edf3); }

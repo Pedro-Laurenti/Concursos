@@ -1,6 +1,7 @@
 """DATAPREV 2026 – Flask Web App para Azure App Service (v2)"""
-import os, json, uuid
+import os, json, uuid, datetime as _dt, pathlib
 from flask import Flask, request, jsonify, render_template, redirect, url_for, abort
+from werkzeug.utils import secure_filename
 from azure.data.tables import TableServiceClient, UpdateMode
 from dotenv import load_dotenv
 
@@ -13,9 +14,41 @@ _content_cache = None
 def _content():
     global _content_cache
     if _content_cache is None:
-        p = os.path.join(ROOT, "static", "conteudo.json")
-        _content_cache = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+        try:
+            entities = list(_tbl("conteudo").query_entities("PartitionKey eq 'c'"))
+            _content_cache = {e["RowKey"]: {"titulo": e.get("titulo",""), "html": e.get("html","") + e.get("html2","")} for e in entities}
+        except Exception:
+            _content_cache = {}
+        if not _content_cache:
+            p = os.path.join(ROOT, "static", "conteudo.json")
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as f:
+                    _content_cache = json.load(f)
+                _seed_content(_content_cache)
     return _content_cache
+
+def _seed_content(data):
+    conn = os.environ.get("AzureWebJobsStorage", "UseDevelopmentStorage=true")
+    svc  = TableServiceClient.from_connection_string(conn)
+    try:
+        svc.create_table_if_not_exists("conteudo")
+    except Exception:
+        pass
+    tbl = _tbl("conteudo")
+    for date, entry in data.items():
+        html = entry.get("html","")
+        try:
+            tbl.upsert_entity({"PartitionKey":"c","RowKey":date,
+                               "titulo": entry.get("titulo","")[:200],
+                               "html":  html[:30000],
+                               "html2": html[30000:60000]})
+        except Exception:
+            pass
+
+def _content_invalidate(date, titulo, html):
+    global _content_cache
+    if _content_cache is not None:
+        _content_cache[date] = {"titulo": titulo, "html": html}
 app  = Flask(__name__, template_folder="templates", static_folder="static")
 
 # ── helpers ────────────────────────────────────────────────────────────────────
@@ -249,6 +282,28 @@ def quiz_results():
         "total":int(b.get("total",0)),"acertos":int(b.get("acertos",0)),
         "erros":json.dumps(b.get("erros",[]))})
     return _ok({"ok": True})
+
+# ── content CRUD ──────────────────────────────────────────────────────────────
+
+@app.route("/api/conteudo/<date>")
+def api_get_conteudo(date):
+    entry = _content().get(date, {})
+    return _ok({"titulo": entry.get("titulo",""), "html": entry.get("html","")})
+
+@app.route("/api/conteudo/<date>", methods=["PUT","OPTIONS"])
+def api_put_conteudo(date):
+    if request.method == "OPTIONS": return _ok({})
+    data = request.get_json(silent=True) or {}
+    titulo = str(data.get("titulo",""))[:200]
+    html   = str(data.get("html",""))
+    tbl = _tbl("conteudo")
+    tbl.upsert_entity({"PartitionKey":"c","RowKey":date,
+                       "titulo": titulo,
+                       "html":   html[:30000],
+                       "html2":  html[30000:60000]})
+    _content_invalidate(date, titulo, html)
+    return _ok({"ok": True})
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
